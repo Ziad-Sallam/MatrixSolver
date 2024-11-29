@@ -1,7 +1,7 @@
 import numpy as np
 import time
 
-class JacobiSolver: 
+class GaussSeidelSolver:
     def __init__(self, A, b, initial_guess=None, max_iter=100, tol=1e-5, precision=None, scaling=False):
         self.A = np.array(A, dtype=float)
         self.b = np.array(b, dtype=float)
@@ -29,12 +29,12 @@ class JacobiSolver:
                 max_err = max(max_err, abs(x_new[i] - x_old[i]))
         return max_err
 
-    def jacobi_iteration(self, single_step=False):
-        x_old = self.initial_guess
+    def gauss_seidel_iteration(self, single_step=False):
+        x = self.initial_guess
         start_time = time.time()
 
         for k in range(self.max_iter):
-            x_new = np.copy(x_old)
+            x_old = np.copy(x)
             print(f"\nIteration {k + 1}:")
 
             for i in range(self.num_variables):
@@ -42,24 +42,22 @@ class JacobiSolver:
                 terms = []
                 for j in range(self.num_variables):
                     if j != i:
-                        term = self.A[i][j] * x_old[j]
+                        term = self.A[i][j] * x[j]
                         sum_ += term
-                        terms.append(f"{self.A[i][j]} * {x_old[j]:.{self.precision}f}")
+                        terms.append(f"{self.A[i][j]} * {x[j]:.{self.precision}f}")
                 
-                x_new[i] = (self.b[i] - sum_) / self.A[i][i]
+                x[i] = (self.b[i] - sum_) / self.A[i][i]
                 computation_details = f"x{i + 1} = ({self.b[i]} - ({' + '.join(terms)})) / {self.A[i][i]}"
-                print(f"    {computation_details} = {x_new[i]:.{self.precision}f}")
+                print(f"    {computation_details} = {x[i]:.{self.precision}f}")
             
             if single_step:
-                print(f"    Current solution: {np.round(x_new, self.precision)}")
-            if self.max_error(x_new, x_old) < self.tol:
+                print(f"    Current solution: {np.round(x, self.precision)}")
+            if self.max_error(x, x_old) < self.tol:
                 break
-
-            x_old = np.copy(x_new)
 
         end_time = time.time()
         execution_time = end_time - start_time
-        solution = np.round(x_new, self.precision)
+        solution = np.round(x, self.precision)
 
         return solution, k + 1, execution_time
 
@@ -78,11 +76,11 @@ if __name__ == "__main__":
     scaling_choice = input("Apply scaling? (y/n, default n): ").strip().lower()
     scaling = scaling_choice == 'y'
 
-    solver = JacobiSolver(A, B, max_iter=100, tol=1e-5, precision=precision, scaling=scaling)
+    solver = GaussSeidelSolver(A, B, max_iter=100, tol=1e-5, precision=precision, scaling=scaling)
 
     # Solve with optional single-step simulation
     step_mode = input("Enable single-step mode? (y/n, default n): ").strip().lower() == 'y'
-    solution, iterations, exec_time = solver.jacobi_iteration(single_step=step_mode)
+    solution, iterations, exec_time = solver.gauss_seidel_iteration(single_step=step_mode)
 
     print(f"\nSolution: {solution}")
     print(f"Iterations: {iterations}")

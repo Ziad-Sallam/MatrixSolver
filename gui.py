@@ -113,12 +113,14 @@ class Ui_Form(object):
         self.configGrid.addWidget(self.numberOfIterations, 2, 1, 1, 1)
 
         self.matrixScroll = QtWidgets.QScrollArea(Form)
-        self.matrixScroll.setGeometry(QtCore.QRect(10, 370, 1500, 550))
+        self.matrixScroll.setGeometry(QtCore.QRect(10, 370, 1200, 550))
         self.matrixScroll.setWidgetResizable(True)
-        self.matrixWidget = QtWidgets.QWidget(self.matrixScroll)
-        self.matrixWidget.setGeometry(QtCore.QRect(10, 0, 1000, 100))
+        self.matrixWidget = QtWidgets.QWidget()
 
         self.matrixScroll.setObjectName("matrixScroll")
+        self.matrixScroll.setWidgetResizable(True)
+        #self.matrixScroll.setWidget(self.matrixWidget)
+        self.matrixScroll.scroll(300, 300)
 
 
         self.matrixBox = []
@@ -140,7 +142,6 @@ class Ui_Form(object):
         self.initials = QtWidgets.QWidget(parent=Form)
         self.initials.setGeometry(QtCore.QRect(30, 240, 1500, 100))
         self.initials.setObjectName("initials")
-
         self.initialsList = []
         for i in range(16):
             l = QtWidgets.QLabel(self.initials)

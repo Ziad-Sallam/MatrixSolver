@@ -12,6 +12,7 @@ class GaussianElimination:
         self.n = len(B_Matrix)  # Number of equations (rows)
         self.x = np.zeros(self.n)  # Solution array
         self.i = 0
+        self.steps = []
 
     def validate_input(self):  # To make sure validation of the input
         if self.A_Matrix.shape[0] != self.A_Matrix.shape[1]:
@@ -24,6 +25,7 @@ class GaussianElimination:
     def forward_elimination(self):  # Forward elimination
         augmented_matrix = np.concatenate((self.A_Matrix, self.B_Matrix), axis=1)
         print(f"The initial augmented matrix is:\n{np.round(augmented_matrix, self.significant_digits)}")
+        self.steps.append(augmented_matrix.copy())
         print("----------------------------------------------------")
 
         for i in range(self.n):
@@ -41,6 +43,7 @@ class GaussianElimination:
                 if change:
                     augmented_matrix[[row, i]] = augmented_matrix[[i, row]]
                     print(f"R{i + 1}<->R{row + 1}\n{np.round(augmented_matrix, self.significant_digits)}")
+                    self.steps.append(augmented_matrix.copy())
                     print("----------------------------------------------------")
             else:
                 # Pivoting to avoid division by small values
@@ -53,6 +56,7 @@ class GaussianElimination:
                 if change:
                     augmented_matrix[[row, i]] = augmented_matrix[[i, row]]
                     print(f"R{i + 1}<->R{row + 1}\n{np.round(augmented_matrix, self.significant_digits)}")
+                    self.steps.append(augmented_matrix.copy())
                     print("----------------------------------------------------")
 
             for j in range(i + 1, self.n):
@@ -61,6 +65,7 @@ class GaussianElimination:
                 augmented_matrix[j] = augmented_matrix[j] - (augmented_matrix[i] * factor)
                 print(f"R{j + 1}<-R{j + 1} - ({factor} * R{i + 1})")
                 print(np.round(augmented_matrix, self.significant_digits))
+                self.steps.append(augmented_matrix.copy())
                 print("----------------------------------------------------")
 
         return augmented_matrix
@@ -84,6 +89,7 @@ class GaussianElimination:
 
             for answer in range(self.n):
                 print(f"X{answer} is {np.round(self.x[answer], self.significant_digits)}")
+                self.steps.append(augmented_matrix.copy())
             print("----------------------------------------------------")
 
             end_time = time.time()
@@ -91,8 +97,11 @@ class GaussianElimination:
             print(f"Execution Time: {execution_time:.6f} seconds")
         else:
             print("Invalid Input")
-
-        # Example :
+        print("Steps taken during the process:")
+        for step in self.steps:
+            print(np.round(step, self.significant_digits))
+            print("----------------------------------------------------")
+        return self.steps
 
 
 matrix1 = [[25, 5, 1, 5],
