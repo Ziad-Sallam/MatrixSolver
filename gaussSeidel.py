@@ -11,6 +11,7 @@ class GaussSeidelSolver:
         self.tol = tol
         self.precision = precision if precision is not None else 6
         self.scaling = scaling
+        self.ans_str =""
         if self.scaling:
             self.apply_scaling()
 
@@ -36,6 +37,7 @@ class GaussSeidelSolver:
         for k in range(self.max_iter):
             x_old = np.copy(x)
             print(f"\nIteration {k + 1}:")
+            self.ans_str += f"Iteration {k + 1}: "
 
             for i in range(self.num_variables):
                 sum_ = 0
@@ -49,9 +51,11 @@ class GaussSeidelSolver:
                 x[i] = (self.b[i] - sum_) / self.A[i][i]
                 computation_details = f"x{i + 1} = ({self.b[i]} - ({' + '.join(terms)})) / {self.A[i][i]}"
                 print(f"    {computation_details} = {x[i]:.{self.precision}f}")
+                self.ans_str += f"    {computation_details} = {x[i]:.{self.precision}f}"
             
             if single_step:
                 print(f"    Current solution: {np.round(x, self.precision)}")
+                self.ans_str += f"    Current solution: {np.round(x, self.precision)}"
             if self.max_error(x, x_old) < self.tol:
                 break
 

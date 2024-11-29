@@ -11,6 +11,7 @@ class JacobiSolver:
         self.tol = tol
         self.precision = precision if precision is not None else 6
         self.scaling = scaling
+        self.ans_str = ""
         if self.scaling:
             self.apply_scaling()
 
@@ -36,6 +37,7 @@ class JacobiSolver:
         for k in range(self.max_iter):
             x_new = np.copy(x_old)
             print(f"\nIteration {k + 1}:")
+            self.ans_str += f"\nIteration {k + 1}:"
 
             for i in range(self.num_variables):
                 sum_ = 0
@@ -49,9 +51,11 @@ class JacobiSolver:
                 x_new[i] = (self.b[i] - sum_) / self.A[i][i]
                 computation_details = f"x{i + 1} = ({self.b[i]} - ({' + '.join(terms)})) / {self.A[i][i]}"
                 print(f"    {computation_details} = {x_new[i]:.{self.precision}f}")
+                self.ans_str+=f"    {computation_details} = {x_new[i]:.{self.precision}f}"
             
             if single_step:
                 print(f"    Current solution: {np.round(x_new, self.precision)}")
+                self.ans_str+=f"    Current solution: {np.round(x_new, self.precision)}"
             if self.max_error(x_new, x_old) < self.tol:
                 break
 

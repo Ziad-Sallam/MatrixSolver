@@ -16,10 +16,10 @@
   <widget class="QWidget" name="gridLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>90</x>
-     <y>30</y>
-     <width>761</width>
-     <height>191</height>
+     <x>10</x>
+     <y>20</y>
+     <width>881</width>
+     <height>211</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="configGrid" rowstretch="0,0,0" columnstretch="0,0,0,0,0">
@@ -32,29 +32,6 @@
     <property name="rightMargin">
      <number>0</number>
     </property>
-    <item row="0" column="3">
-     <widget class="QPushButton" name="Sbmit">
-      <property name="text">
-       <string>Submit</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="methodLabel">
-      <property name="font">
-       <font>
-        <family>MV Boli</family>
-        <pointsize>12</pointsize>
-       </font>
-      </property>
-      <property name="layoutDirection">
-       <enum>Qt::RightToLeft</enum>
-      </property>
-      <property name="text">
-       <string>Method: </string>
-      </property>
-     </widget>
-    </item>
     <item row="0" column="1">
      <widget class="QSpinBox" name="Size">
       <property name="enabled">
@@ -78,6 +55,80 @@
       <property name="maximum">
        <number>1000</number>
       </property>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QLabel" name="Scaling">
+      <property name="font">
+       <font>
+        <family>MV Boli</family>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>significant figures</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="QSpinBox" name="numberOfIterations">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="frame">
+       <bool>true</bool>
+      </property>
+      <property name="keyboardTracking">
+       <bool>true</bool>
+      </property>
+      <property name="showGroupSeparator" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="prefix">
+       <string notr="true"/>
+      </property>
+      <property name="minimum">
+       <number>1</number>
+      </property>
+      <property name="maximum">
+       <number>1000</number>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="3">
+     <widget class="QDoubleSpinBox" name="error">
+      <property name="decimals">
+       <number>5</number>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QComboBox" name="methodBox">
+      <item>
+       <property name="text">
+        <string>LU Decompisition</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Gauss Elimination</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Gauss Jordan</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Gauss seidel</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Jacobi Method</string>
+       </property>
+      </item>
      </widget>
     </item>
     <item row="1" column="3">
@@ -119,39 +170,19 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="1">
-     <widget class="QComboBox" name="methodBox">
-      <item>
-       <property name="text">
-        <string>LU Decompisition</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Gauss Elimination</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Gauss Jordan</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Gauss seidel</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Jacobi Method</string>
-       </property>
-      </item>
-     </widget>
-    </item>
-    <item row="0" column="2">
-     <widget class="QLabel" name="label">
+    <item row="1" column="0">
+     <widget class="QLabel" name="methodLabel">
+      <property name="font">
+       <font>
+        <family>MV Boli</family>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::RightToLeft</enum>
+      </property>
       <property name="text">
-       <string/>
+       <string>Method: </string>
       </property>
      </widget>
     </item>
@@ -197,35 +228,13 @@
       </property>
      </widget>
     </item>
-    <item row="2" column="1">
-     <widget class="QSpinBox" name="numberOfIterations">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="frame">
-       <bool>true</bool>
-      </property>
-      <property name="keyboardTracking">
-       <bool>true</bool>
-      </property>
-      <property name="showGroupSeparator" stdset="0">
-       <bool>false</bool>
-      </property>
-      <property name="prefix">
-       <string notr="true"/>
-      </property>
-      <property name="minimum">
-       <number>1</number>
-      </property>
-      <property name="maximum">
-       <number>1000</number>
-      </property>
-     </widget>
+    <item row="0" column="3">
+     <widget class="QSpinBox" name="significantFig"/>
     </item>
-    <item row="2" column="3">
-     <widget class="QDoubleSpinBox" name="error">
-      <property name="decimals">
-       <number>5</number>
+    <item row="0" column="4">
+     <widget class="QPushButton" name="Sbmit">
+      <property name="text">
+       <string>Submit</string>
       </property>
      </widget>
     </item>
@@ -234,10 +243,10 @@
   <widget class="QWidget" name="widget" native="true">
    <property name="geometry">
     <rect>
-     <x>90</x>
-     <y>280</y>
-     <width>741</width>
-     <height>541</height>
+     <x>70</x>
+     <y>270</y>
+     <width>761</width>
+     <height>531</height>
     </rect>
    </property>
   </widget>

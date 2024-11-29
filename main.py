@@ -1,6 +1,13 @@
+import time
+
 from gui import Ui_Form
 from PyQt6 import QtCore, QtGui, QtWidgets
-
+from gaussSeidel import GaussSeidelSolver
+from Jacobi import JacobiSolver
+from Gauss3 import GaussianElimination
+from answers import Ui_ans
+from GaussJordon import GaussJordanElimination
+from LUdecompsition import LUDecomposition
 
 def handleMethodChange():
     if ui.methodBox.currentText() == "LU Decompisition":
@@ -31,6 +38,7 @@ def handleMethodChange():
 
 def handleSizeChange():
     print(ui.Size.value())
+    print(ui.doubleSpinBox.value())
     for i in range(len(ui.matrixBox)):
         ui.initialsList[i][0].hide()
         ui.initialsList[i][1].hide()
@@ -44,6 +52,99 @@ def handleSizeChange():
             ui.matrixBox[i][j].show()
 
 
+def segnificantFiguresChange():
+    x = ui.doubleSpinBox.value()
+    ui.error.setDecimals(x)
+    for i in range(16):
+        ui.initialsList[i][1].setDecimals(x)
+
+    for i in range(16):
+        for j in range(17):
+            ui.matrixBox[i][j].setDecimals(x)
+
+
+def evaluate():
+    method = ui.methodBox.currentText()
+    size = ui.Size.value()
+    A = []
+    b = []
+    finals =[]
+    ex_time =0
+    iterations =None
+    steps = ""
+    for i in range(size):
+        row = []
+        for j in range(size):
+            row.append(ui.matrixBox[i][j].value())
+        A.append(row)
+        b.append(ui.matrixBox[i][size].value())
+
+    if method == "Gauss seidel" or method == "Jacobi Method":
+        iterations = ui.numberOfIterations.value()
+        maxError = ui.error.value()
+        initials = []
+        for i in range(size):
+            initials.append(ui.initialsList[i][1].value())
+        print(initials)
+        if method == "Gauss seidel":
+            print(initials)
+            solver = GaussSeidelSolver(A, b, max_iter=iterations, tol=maxError,precision=ui.doubleSpinBox.value())
+            solution, iteration, time = solver.gauss_seidel_iteration(single_step=True)
+            finals = solution
+            print(iterations)
+            print(time)
+            ex_time = time
+            iterations = iteration
+            steps = solver.ans_str
+        elif method == "Jacobi Method":
+            solver = JacobiSolver(A, b, max_iter=iterations,tol=maxError,precision=ui.doubleSpinBox.value())
+            solution, iteration, time = solver.jacobi_iteration(single_step=True)
+            print(solution)
+            finals = solution
+            print(iteration)
+            print(time)
+            ex_time = time
+            iterations = iteration
+            steps = solver.ans_str
+    elif method == "Gauss Elimination":
+        solver = GaussianElimination(A, b, scaling=True, steps=True, significant_digits=ui.doubleSpinBox.value())
+        solver.solve()
+        print(solver.finals)
+        finals = solver.finals
+        ex_time = solver.execution_time
+        steps = solver.ans_str
+    elif method == "Gauss Jordan":
+        solver = GaussJordanElimination(A,b,scaling=True, steps=True, significant_digits=ui.doubleSpinBox.value())
+        solver.solve()
+        finals = solver.finals
+        ex_time = solver.execution_time
+        steps = solver.ans_str
+    elif method == "LU Decompisition":
+        if ui.formatBox.currentText() == "Doolittle form":
+            pass
+        elif ui.formatBox.currentText() == "Crout form":
+            pass
+        elif ui.formatBox.currentText() == "Cholesky form":
+            pass
+
+    createTextFile(steps)
+    setAnsWindow(finals, ex_time, iterations)
+    ans.show()
+
+def setAnsWindow(finals,time,iterations):
+    ui1.iterations.setText(str(iterations))
+    ui1.error.setText(str(ui.error.value()))
+    ui1.Method.setText(str(ui.methodBox.currentText()))
+    ui1.size.setText(str(ui.Size.value()))
+    ui1.time.setText(str(time))
+    for i in range(len(finals)):
+        ui1.answers[i][1].setText(str(finals[i]))
+
+def createTextFile(str):
+    file = open("ans.txt", "w")
+    file.write(str)
+    file.close()
+
 
 if __name__ == "__main__":
     import sys
@@ -55,10 +156,15 @@ if __name__ == "__main__":
     handleSizeChange()
     ui.methodBox.currentIndexChanged.connect(handleMethodChange)
     ui.Size.valueChanged.connect(handleSizeChange)
+    ui.Sbmit.clicked.connect(evaluate)
+    ui.doubleSpinBox.valueChanged.connect(segnificantFiguresChange)
+
+    ans = QtWidgets.QWidget()
+    ui1 = Ui_ans()
+    ui1.setupUi(ans)
+
     Form.show()
     sys.exit(app.exec())
-
-
 
 
 # initialsList = []

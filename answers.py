@@ -93,7 +93,7 @@ class Ui_ans(object):
         self.solutionWidget.setGeometry(QtCore.QRect(19, 149, 761, 421))
         self.solutionWidget.setObjectName("solutionWidget")
 
-        self.answers = [[]]
+        self.answers = []
         for i in range(16):
             label = QtWidgets.QLabel(self.solutionWidget)
             label.setObjectName("answerLabel" + str(i))
