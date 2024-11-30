@@ -1,7 +1,7 @@
 import numpy as np
 import time  # Import time module for measuring execution time
 
-class GaussianElimination:
+class GaussJordanElimination:
 
     def __init__(self, A, B, scaling=False, steps=False, significant_digits=6):
         self.A = np.array(A, float)
@@ -16,44 +16,48 @@ class GaussianElimination:
         self.infiniteFlag = False
         self.noSolution = False
 
-    def apply_scaling(self):
-        """Scale rows of the matrix A and adjust B based on the largest absolute value in each row."""
-        n = len(self.A)
-        for i in range(n):
-            max_val = max(abs(self.A[i]))
-            if max_val != 0:
-                self.A[i] /= max_val
-                self.B[i] /= max_val
-        if self.steps:
-            print("Scaled matrix:")
-            self.ans_str += "\nScaled matrix:"
-            self.display_matrix()
+    def normalize_for_pivoting(self):
+        """Normalize each row by dividing all elements by the largest element in that row."""
+        normalized_A = self.A.copy()  # Copy the matrix for normalization
+        for i in range(len(self.A)):
+            max_element = np.max(np.abs(normalized_A[i]))
+            if max_element != 0:
+                normalized_A[i] = normalized_A[i] / max_element
+            if self.steps:
+                print(f"Normalized row {i+1} for pivoting: {normalized_A[i]}")
+        return normalized_A
 
     def forward_elimination(self):
         """Perform forward elimination to transform the system into upper triangular form."""
         n = len(self.A)
+
         for i in range(n):
-            # Pivoting (find maximum element in column)
-            max_row = max(range(i, n), key=lambda x: abs(self.A[x, i]))
-            if self.A[max_row, i] == 0:
-                if self.B[max_row] != 0:
+            # Normalize the matrix for pivoting
+            normalized_A = self.normalize_for_pivoting()
+
+            # Pivoting: Find the row with the maximum value in the current column
+            pivot_row = max(range(i, n), key=lambda x: abs(normalized_A[x, i]))
+
+            if self.A[pivot_row, i] == 0:
+                if self.B[pivot_row] != 0:
                     print("The system has no solution (singular matrix).")
+                    self.ans_str += "The system has no solution (singular matrix)."
                     self.noSolution = True
-                    self.ans_str += "\nThe system has no solution (singular matrix)."
                     return False, None  # No solution
                 else:
                     print("The system has infinite solutions (free variable detected).")
+                    self.ans_str += "The system has infinite solutions (free variable detected)."
                     self.infiniteFlag = True
-                    self.ans_str += "\nThe system has infinite solutions (free variable detected)."
                     return False, None  # Infinite solutions
-            if max_row != i:  # Swap rows if necessary
-                self.A[[i, max_row]] = self.A[[max_row, i]]
-                self.B[i], self.B[max_row] = self.B[max_row], self.B[i]
+
+            if pivot_row != i:  # Swap rows if necessary
+                self.A[[i, pivot_row]] = self.A[[pivot_row, i]]
+                self.B[i], self.B[pivot_row] = self.B[pivot_row], self.B[i]
                 if self.steps:
-                    print(f"R{i+1} <-> R{max_row+1}")
+                    print(f"R{i+1} <-> R{pivot_row+1}")
                     self.display_matrix()
 
-            # Eliminate entries below the pivot
+            # Eliminate entries below the pivot using the correct rows
             for j in range(i + 1, n):
                 if self.A[j, i] != 0:
                     ratio = self.A[j, i] / self.A[i, i]
@@ -99,25 +103,21 @@ class GaussianElimination:
         start_time = time.time()  # Start measuring time
 
         print("The initial augmented matrix is:")
-        self.ans_str += "\nThe initial augmented matrix is:"
+        self.ans_str += "The initial augmented matrix is:"
         self.display_matrix()
-
-        if self.scaling:
-            self.apply_scaling()
 
         # Forward elimination to transform the system to upper triangular form
         is_valid, B_result = self.forward_elimination()
         if not is_valid:
-            return False # No valid solution (either no solution or infinite)
+            return  # No valid solution (either no solution or infinite)
 
         # Back substitution to get the solutions if the system is consistent
         solutions = self.back_substitution()
 
         # Check for infinite solutions
         if np.allclose(self.A[-1], np.zeros_like(self.A[-1])) and np.allclose(self.B[-1], 0):
-            print("\nThe system has infinite solutions.")
-            self.infiniteFlag = True
-            self.ans_str += "\nThe system has infinite solutions."
+            print("The system has infinite solutions.")
+            self.ans_str += "The system has infinite solutions."
         else:
             print("\nSolutions:")
             self.ans_str += "\nSolutions:\n"
@@ -126,20 +126,19 @@ class GaussianElimination:
                 self.finals.append(solutions[i])
 
         end_time = time.time()  # End measuring time
-        self.execution_time = end_time - start_time
-        print(f"\nExecution time: {self.execution_time:.6f} seconds")
-        self.ans_str += f"\nExecution time: {self.execution_time:.6f} seconds"
-        return True
+        execution_time = end_time - start_time
+        print(f"\nExecution time: {execution_time:.6f} seconds")
+        self.ans_str += f"\nExecution time: {execution_time:.6f} seconds"
 
 
 # Example setup with matrices predefined
 if __name__ == "__main__":
     A = [
-        [5, 2, 8],
-        [-5, -9, -5],
-        [13, 2, 2]
+        [6.6, 5, 1],
+        [150, 8, 1],
+        [33, 12, 1]
     ]  # Example system
-    B = [22, 3, 2]
+    B = [10, 300, 15]
 
     # User input for precision, scaling, and steps
     precision_input = input("Enter the number of significant figures (default 6): ")
@@ -151,7 +150,7 @@ if __name__ == "__main__":
     steps_choice = input("Show steps during calculation? (y/n, default n): ").strip().lower()
     steps = steps_choice == 'y'
 
-    solver = GaussianElimination(A, B, scaling, steps, significant_digits=precision)
+    solver = GaussJordanElimination(A, B, scaling, steps, significant_digits=precision)
 
     # Solve the system
     solver.solve()
