@@ -116,13 +116,12 @@ def evaluate():
             finals = []
             steps = solver.ans_str
             if solver.infiniteFlag:
-                ui1.solutionWidget.hide()
-                ui1.errorMessage.setText("infinite number of solution")
-                ui1.errorMessage.show()
-                ans.show()
+                setAnsWindowError("infinite number of solutions")
                 return
 
-
+            elif solver.noSolution:
+                setAnsWindowError("no solution")
+                return
 
         else:
             print(solver.finals)
@@ -147,9 +146,11 @@ def evaluate():
     setAnsWindow(finals, ex_time, iterations)
     ans.show()
 
+
 def handleDetailedSol():
     command = "notepad ans.txt"
     subprocess.run(command, shell=True, check=True, text=True, capture_output=True)
+
 
 def setAnsWindow(finals,time,iterations):
     ui1.iterations.setText(str(iterations))
@@ -157,8 +158,21 @@ def setAnsWindow(finals,time,iterations):
     ui1.Method.setText(str(ui.methodBox.currentText()))
     ui1.size.setText(str(ui.Size.value()))
     ui1.time.setText(str(time))
+    ui1.errorsWidget.hide()
     for i in range(len(finals)):
         ui1.answers[i][1].setText(str(finals[i]))
+
+def setAnsWindowError(msg):
+    setAnsWindow([], "infinity", "AAAAAAHHHHHHH!!!!!!")
+    ui1.solutionWidget.hide()
+    ui1.errorMessage.setText(msg)
+    ui1.errorsWidget.show()
+    ui1.errorMessage.show()
+    ans.show()
+
+
+
+
 
 def createTextFile(str):
     file = open("ans.txt", "w")
