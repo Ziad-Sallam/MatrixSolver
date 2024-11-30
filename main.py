@@ -130,10 +130,13 @@ def evaluate():
             steps = solver.ans_str
     elif method == "Gauss Jordan":
         solver = GaussJordanElimination(A,b,scaling=True, steps=True, significant_digits=ui.doubleSpinBox.value())
-        solver.solve()
-        finals = solver.finals
-        ex_time = solver.execution_time
-        steps = solver.ans_str
+        if not solver.solve():
+            ex_time = "infinity"
+            finals = []
+            steps = solver.ans_str
+            if solver.noSolution:
+                setAnsWindowError("The system has no unique solution (singular matrix)")
+                return
     elif method == "LU Decompisition":
         if ui.formatBox.currentText() == "Doolittle form":
             pass
@@ -163,7 +166,7 @@ def setAnsWindow(finals,time,iterations):
         ui1.answers[i][1].setText(str(finals[i]))
 
 def setAnsWindowError(msg):
-    setAnsWindow([], "infinity", "AAAAAAHHHHHHH!!!!!!")
+    setAnsWindow([], "infinity","can't be determined")
     ui1.solutionWidget.hide()
     ui1.errorMessage.setText(msg)
     ui1.errorsWidget.show()

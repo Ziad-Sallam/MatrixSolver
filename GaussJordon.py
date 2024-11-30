@@ -35,8 +35,9 @@ class GaussJordanElimination:
             max_row = max(range(i, n), key=lambda x: abs(self.A[x, i]))
             if self.A[max_row, i] == 0:
                 print("The system has no unique solution (singular matrix).")
-                self.ans_str += "The system has no unique solution (singular matrix)."
-                return False  # No unique solution
+                self.noSolution = True
+                self.ans_str += "\nThe system has no unique (singular matrix)."
+                return False, None  # No solution
             if max_row != i:  # Swap rows if necessary
                 self.A[[i, max_row]] = self.A[[max_row, i]]
                 self.B[i], self.B[max_row] = self.B[max_row], self.B[i]
