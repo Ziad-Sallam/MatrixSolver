@@ -19,6 +19,9 @@ class LUDecomposition:
 
         for i in range(n):
             L[i][i] = 1  # Diagonal of L is 1
+            if U[i][i] == 0:  # Check if pivot is zero
+                raise ValueError(f"Matrix is singular, cannot perform LU decomposition (zero pivot at row {i+1})")
+
             for j in range(i + 1, n):
                 factor = U[j][i] / U[i][i]
                 L[j][i] = factor
@@ -89,7 +92,11 @@ class LUDecomposition:
         self.display_matrices(np.eye(len(self.A)), self.A)
 
         # Perform LU Decomposition
-        L, U = self.decompose()
+        try:
+            L, U = self.decompose()
+        except ValueError as e:
+            print(str(e))
+            return None
 
         # Solve L * Y = B
         Y = self.forward_substitution(L, self.B)
@@ -101,13 +108,13 @@ class LUDecomposition:
 
 
 if __name__ == "__main__":
-    # Input matrix A and vector B
+    # Example input
     A = [
-        [6, 3, 4],
-        [3, 6, 5],
-        [4, 5, 10]
+        [0, 5, 1],
+        [0, 12, 1],
+        [0, 8, 1]
     ]
-    B = [2, -4, 5]
+    B = [10, 20, 30]
 
     # User input for precision and steps
     precision_input = input("Enter the number of significant figures (default 6): ")
@@ -122,6 +129,9 @@ if __name__ == "__main__":
     # Solve the system
     X = solver.solve()
 
-    print("\nFinal Solution:")
-    for i, val in enumerate(X):
-        print(f"x{i+1} = {val:.{precision}f}")
+    if X is not None:
+        print("\nFinal Solution:")
+        for i, val in enumerate(X):
+            print(f"x{i+1} = {val:.{precision}f}")
+    else:
+        print("The system has no solution or infinite solutions.")

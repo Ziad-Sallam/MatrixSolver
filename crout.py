@@ -42,6 +42,22 @@ class LU_Decomposition:
 
         return self.L, self.U
 
+    def check_for_solution(self):
+        """Check if the system has no solution or infinitely many solutions."""
+        # Check for zero rows in U or L
+        for i in range(self.n):
+            if np.allclose(self.L[i], 0) and not np.allclose(self.B[i], 0):
+                print("No solution: Row in L is zero, but corresponding B is non-zero.")
+                return False
+            if np.allclose(self.U[i], 0) and not np.allclose(self.B[i], 0):
+                print("No solution: Row in U is zero, but corresponding B is non-zero.")
+                return False
+            if np.allclose(self.U[i], 0) and np.allclose(self.B[i], 0):
+                print("Infinite solutions: Row in U is zero and corresponding B is zero.")
+                return None  # Infinite solutions
+
+        return True  # The system can be solved
+
     def forward_substitution(self, L, B):
         """Solve L * Y = B using forward substitution."""
         n = len(L)
@@ -98,10 +114,15 @@ class LU_Decomposition:
 
     def solve(self):
         """Solve the system of equations using LU Decomposition."""
-
-
         # Perform LU Decomposition
         L, U = self.decompose()
+
+        # Check for no solution or infinite solutions
+        solution_status = self.check_for_solution()
+        if solution_status is False:
+            return None  # No solution
+        elif solution_status is None:
+            return "Infinite solutions"
 
         # Solve L * Y = B
         Y = self.forward_substitution(L, self.B)
@@ -116,11 +137,11 @@ class LU_Decomposition:
 if __name__ == "__main__":
     # Example input
     A = [
-        [2, 3, -1],
-        [3, 2, 1],
-        [1, -5, 32]
+        [0, 5, 1],
+        [0, 12, 1],
+        [0, 8, 1]
     ]
-    B = [5, 10, 12]
+    B = [10, 20, 30]
 
     # User input for precision and steps
     precision_input = input("Enter the number of significant figures (default 6): ")
@@ -135,6 +156,11 @@ if __name__ == "__main__":
     # Solve the system
     X = solver.solve()
 
-    print("\nFinal Solution:")
-    for i, val in enumerate(X):
-        print(f"x{i+1} = {val:.{precision}f}")
+    if X is None:
+        print("The system has no solution.")
+    elif X == "Infinite solutions":
+        print("The system has infinitely many solutions.")
+    else:
+        print("\nFinal Solution:")
+        for i, val in enumerate(X):
+            print(f"x{i+1} = {val:.{precision}f}")
