@@ -13,6 +13,8 @@ class GaussianElimination:
         self.ans = []
         self.ans_str = ""
         self.finals = []
+        self.infiniteFlag = False
+        self.noSolution = False
 
     def normalize_for_pivoting(self):
         """Normalize each row by dividing all elements by the largest element in that row."""
@@ -39,10 +41,12 @@ class GaussianElimination:
             if self.A[pivot_row, i] == 0:
                 if self.B[pivot_row] != 0:
                     print("The system has no solution (singular matrix).")
+                    self.noSolution = True
                     self.ans_str += "The system has no solution (singular matrix)."
                     return False, None  # No solution
                 else:
                     print("The system has infinite solutions (free variable detected).")
+                    self.infiniteFlag = True
                     self.ans_str += "The system has infinite solutions (free variable detected)."
                     return False, None  # Infinite solutions
 

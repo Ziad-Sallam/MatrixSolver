@@ -6,10 +6,10 @@ from gui import Ui_Form
 from PyQt6 import QtCore, QtGui, QtWidgets
 from gaussSeidel import GaussSeidelSolver
 from Jacobi import JacobiSolver
-from Gauss3 import GaussianElimination
+from GaussFinal import GaussianElimination
 from answers import Ui_ans
-from GaussJordon import GaussJordanElimination
-from LUdecompsition import LUDecomposition
+from gaussJodonFinal import GaussJordanElimination
+#from LUdecompsition import LUDecomposition
 
 def handleMethodChange():
     if ui.methodBox.currentText() == "LU Decompisition":
@@ -28,7 +28,6 @@ def handleMethodChange():
         ui.numberOfIterations.show()
         ui.numberOfIterationsLabel.show()
         ui.initials.show()
-
     else:
         ui.formatBox.hide()
         ui.formatLabel.hide()
@@ -37,7 +36,6 @@ def handleMethodChange():
         ui.numberOfIterations.hide()
         ui.numberOfIterationsLabel.hide()
         ui.initials.hide()
-
 def handleSizeChange():
     print(ui.Size.value())
     print(ui.doubleSpinBox.value())
@@ -115,14 +113,12 @@ def evaluate():
             ex_time = "infinity"
             finals = []
             steps = solver.ans_str
-            if solver.infiniteFlag:
-                setAnsWindowError("infinite number of solutions")
+            if solver.noSolution:
+                setAnsWindowError("The system has no solution")
                 return
-
-            elif solver.noSolution:
-                setAnsWindowError("no solution")
+            elif solver.infiniteFlag:
+                setAnsWindowError("The system has infinite solutions")
                 return
-
         else:
             print(solver.finals)
             finals = solver.finals
@@ -135,7 +131,10 @@ def evaluate():
             finals = []
             steps = solver.ans_str
             if solver.noSolution:
-                setAnsWindowError("The system has no unique solution (singular matrix)")
+                setAnsWindowError("The system has no solution")
+                return
+            elif solver.infiniteFlag:
+                setAnsWindowError("The system has infinite solutions")
                 return
     elif method == "LU Decompisition":
         if ui.formatBox.currentText() == "Doolittle form":

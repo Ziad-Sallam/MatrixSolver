@@ -1,7 +1,7 @@
 import numpy as np
 import time  # Import time module for measuring execution time
 
-class GaussianElimination:
+class GaussJordanElimination:
 
     def __init__(self, A, B, scaling=False, steps=False, significant_digits=6):
         self.A = np.array(A, float)
@@ -13,6 +13,8 @@ class GaussianElimination:
         self.ans = []
         self.ans_str = ""
         self.finals = []
+        self.infiniteFlag = False
+        self.noSolution = False
 
     def normalize_for_pivoting(self):
         """Normalize each row by dividing all elements by the largest element in that row."""
@@ -40,10 +42,12 @@ class GaussianElimination:
                 if self.B[pivot_row] != 0:
                     print("The system has no solution (singular matrix).")
                     self.ans_str += "The system has no solution (singular matrix)."
+                    self.noSolution = True
                     return False, None  # No solution
                 else:
                     print("The system has infinite solutions (free variable detected).")
                     self.ans_str += "The system has infinite solutions (free variable detected)."
+                    self.infiniteFlag = True
                     return False, None  # Infinite solutions
 
             if pivot_row != i:  # Swap rows if necessary
@@ -146,7 +150,7 @@ if __name__ == "__main__":
     steps_choice = input("Show steps during calculation? (y/n, default n): ").strip().lower()
     steps = steps_choice == 'y'
 
-    solver = GaussianElimination(A, B, scaling, steps, significant_digits=precision)
+    solver = GaussJordanElimination(A, B, scaling, steps, significant_digits=precision)
 
     # Solve the system
     solver.solve()
