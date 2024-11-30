@@ -100,7 +100,7 @@ class Ui_ans(object):
             label.setText(f"X{i}:")
             label.move(400 * (i % 2), int(i / 2) * 50)
             ans = QtWidgets.QLabel(self.solutionWidget)
-            ans.setText("a")
+            ans.setText("")
             ans.setObjectName("answer" + str(i))
             ans.move(400 * (i % 2) + 30, int(i / 2) * 50)
             self.answers.append([label,ans])

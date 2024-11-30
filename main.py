@@ -1,5 +1,7 @@
 import time
 
+import subprocess
+
 from gui import Ui_Form
 from PyQt6 import QtCore, QtGui, QtWidgets
 from gaussSeidel import GaussSeidelSolver
@@ -64,6 +66,7 @@ def segnificantFiguresChange():
 
 
 def evaluate():
+    ans.hide()
     method = ui.methodBox.currentText()
     size = ui.Size.value()
     A = []
@@ -131,6 +134,10 @@ def evaluate():
     setAnsWindow(finals, ex_time, iterations)
     ans.show()
 
+def handleDetailedSol():
+    command = "notepad ans.txt"
+    subprocess.run(command, shell=True, check=True, text=True, capture_output=True)
+
 def setAnsWindow(finals,time,iterations):
     ui1.iterations.setText(str(iterations))
     ui1.error.setText(str(ui.error.value()))
@@ -162,6 +169,7 @@ if __name__ == "__main__":
     ans = QtWidgets.QWidget()
     ui1 = Ui_ans()
     ui1.setupUi(ans)
+    ui1.solutionButton.clicked.connect(handleDetailedSol)
 
     Form.show()
     sys.exit(app.exec())
