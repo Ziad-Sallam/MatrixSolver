@@ -183,6 +183,7 @@ class Ui_Form(object):
         self.Sbmit.setText(_translate("Form", "Submit"))
 
 
+
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)

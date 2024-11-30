@@ -13,6 +13,8 @@ class GaussianElimination:
         self.ans = []
         self.ans_str = ""
         self.finals = []
+        self.infiniteFlag = False
+        self.noSolution = False
 
     def apply_scaling(self):
         """Scale rows of the matrix A and adjust B based on the largest absolute value in each row."""
@@ -36,11 +38,13 @@ class GaussianElimination:
             if self.A[max_row, i] == 0:
                 if self.B[max_row] != 0:
                     print("The system has no solution (singular matrix).")
-                    self.ans_str += "The system has no solution (singular matrix)."
+                    self.noSolution = True
+                    self.ans_str += "\nThe system has no solution (singular matrix)."
                     return False, None  # No solution
                 else:
                     print("The system has infinite solutions (free variable detected).")
-                    self.ans_str += "The system has infinite solutions (free variable detected)."
+                    self.infiniteFlag = True
+                    self.ans_str += "\nThe system has infinite solutions (free variable detected)."
                     return False, None  # Infinite solutions
             if max_row != i:  # Swap rows if necessary
                 self.A[[i, max_row]] = self.A[[max_row, i]]
@@ -95,7 +99,7 @@ class GaussianElimination:
         start_time = time.time()  # Start measuring time
 
         print("The initial augmented matrix is:")
-        self.ans_str += "The initial augmented matrix is:"
+        self.ans_str += "\nThe initial augmented matrix is:"
         self.display_matrix()
 
         if self.scaling:
@@ -104,15 +108,16 @@ class GaussianElimination:
         # Forward elimination to transform the system to upper triangular form
         is_valid, B_result = self.forward_elimination()
         if not is_valid:
-            return  # No valid solution (either no solution or infinite)
+            return False # No valid solution (either no solution or infinite)
 
         # Back substitution to get the solutions if the system is consistent
         solutions = self.back_substitution()
 
         # Check for infinite solutions
         if np.allclose(self.A[-1], np.zeros_like(self.A[-1])) and np.allclose(self.B[-1], 0):
-            print("The system has infinite solutions.")
-            self.ans_str += "The system has infinite solutions."
+            print("\nThe system has infinite solutions.")
+            self.infiniteFlag = True
+            self.ans_str += "\nThe system has infinite solutions."
         else:
             print("\nSolutions:")
             self.ans_str += "\nSolutions:\n"
@@ -124,6 +129,7 @@ class GaussianElimination:
         self.execution_time = end_time - start_time
         print(f"\nExecution time: {self.execution_time:.6f} seconds")
         self.ans_str += f"\nExecution time: {self.execution_time:.6f} seconds"
+        return True
 
 
 # Example setup with matrices predefined

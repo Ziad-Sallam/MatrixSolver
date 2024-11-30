@@ -111,11 +111,24 @@ def evaluate():
             steps = solver.ans_str
     elif method == "Gauss Elimination":
         solver = GaussianElimination(A, b, scaling=True, steps=True, significant_digits=ui.doubleSpinBox.value())
-        solver.solve()
-        print(solver.finals)
-        finals = solver.finals
-        ex_time = solver.execution_time
-        steps = solver.ans_str
+        if not solver.solve():
+            ex_time = "infinity"
+            finals = []
+            steps = solver.ans_str
+            if solver.infiniteFlag:
+                ui1.solutionWidget.hide()
+                ui1.errorMessage.setText("infinite number of solution")
+                ui1.errorMessage.show()
+                ans.show()
+                return
+
+
+
+        else:
+            print(solver.finals)
+            finals = solver.finals
+            ex_time = solver.execution_time
+            steps = solver.ans_str
     elif method == "Gauss Jordan":
         solver = GaussJordanElimination(A,b,scaling=True, steps=True, significant_digits=ui.doubleSpinBox.value())
         solver.solve()

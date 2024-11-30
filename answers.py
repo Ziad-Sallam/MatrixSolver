@@ -92,6 +92,13 @@ class Ui_ans(object):
         self.solutionWidget = QtWidgets.QWidget(parent=ans)
         self.solutionWidget.setGeometry(QtCore.QRect(19, 149, 761, 421))
         self.solutionWidget.setObjectName("solutionWidget")
+        self.errorsWidget = QtWidgets.QWidget(ans)
+        self.errorsWidget.move(250,250)
+        self.errorMessage = QtWidgets.QLabel(self.errorsWidget)
+        font = QtGui.QFont()
+        font.setFamily("MV Boli")
+        font.setPointSize(20)
+        self.errorsWidget.setFont(font)
 
         self.answers = []
         for i in range(16):
