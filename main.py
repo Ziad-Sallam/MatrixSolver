@@ -1,7 +1,5 @@
-import time
-
+import time as tm
 import subprocess
-
 from gui import Ui_Form
 from PyQt6 import QtCore, QtGui, QtWidgets
 from gaussSeidel import GaussSeidelSolver
@@ -9,9 +7,12 @@ from Jacobi import JacobiSolver
 from GaussFinal import GaussianElimination
 from answers import Ui_ans
 from gaussJodonFinal import GaussJordanElimination
-#from LUdecompsition import LUDecomposition
+from LUDecomposition1 import LUDecomposition
+from crout1 import LU_Decomposition as CroutDecomposition
+from Chelosky1 import Cholesky_Decomposition
 
 def handleMethodChange():
+    print("heeeelloooo"+str(len(ui.matrixBox)))
     if ui.methodBox.currentText() == "LU Decompisition":
         ui.formatBox.show()
         ui.formatLabel.show()
@@ -36,20 +37,24 @@ def handleMethodChange():
         ui.numberOfIterations.hide()
         ui.numberOfIterationsLabel.hide()
         ui.initials.hide()
+
 def handleSizeChange():
     print(ui.Size.value())
     print(ui.doubleSpinBox.value())
-    for i in range(len(ui.matrixBox)):
-        ui.initialsList[i][0].hide()
-        ui.initialsList[i][1].hide()
-        for j in range(len(ui.matrixBox)+1):
-            ui.matrixBox[i][j].hide()
+    try:
+        for i in range(len(ui.matrixBox)):
+            ui.initialsList[i][0].hide()
+            ui.initialsList[i][1].hide()
+            for j in range(len(ui.matrixBox)+1):
+                ui.matrixBox[i][j].hide()
 
-    for i in range(ui.Size.value()):
-        ui.initialsList[i][0].show()
-        ui.initialsList[i][1].show()
-        for j in range(ui.Size.value()+1):
-            ui.matrixBox[i][j].show()
+        for i in range(ui.Size.value()):
+            ui.initialsList[i][0].show()
+            ui.initialsList[i][1].show()
+            for j in range(ui.Size.value()+1):
+                ui.matrixBox[i][j].show()
+    except Exception as e:
+        pass
 
 
 def segnificantFiguresChange():
@@ -110,7 +115,7 @@ def evaluate():
     elif method == "Gauss Elimination":
         solver = GaussianElimination(A, b, scaling=True, steps=True, significant_digits=ui.doubleSpinBox.value())
         if not solver.solve():
-            ex_time = "infinity"
+            ex_time = ""
             finals = []
             steps = solver.ans_str
             if solver.noSolution:
@@ -127,7 +132,7 @@ def evaluate():
     elif method == "Gauss Jordan":
         solver = GaussJordanElimination(A,b,scaling=True, steps=True, significant_digits=ui.doubleSpinBox.value())
         if not solver.solve():
-            ex_time = "infinity"
+            ex_time = ""
             finals = []
             steps = solver.ans_str
             if solver.noSolution:
@@ -138,11 +143,28 @@ def evaluate():
                 return
     elif method == "LU Decompisition":
         if ui.formatBox.currentText() == "Doolittle form":
-            pass
+            solver = LUDecomposition(A, b, significant_digits=ui.doubleSpinBox.value(), steps=True)
+            st = tm.time()
+            finals = solver.solve().tolist()
+            ex_time = tm.time() - st
+            steps = solver.ans_str
+
         elif ui.formatBox.currentText() == "Crout form":
-            pass
+            solver = CroutDecomposition(A, b, precision=ui.doubleSpinBox.value(), steps=True)
+            st = tm.time()
+            finals = solver.solve().tolist()
+            ex_time = tm.time() - st
+            steps = solver.ans_str
         elif ui.formatBox.currentText() == "Cholesky form":
-            pass
+            try:
+                solver = Cholesky_Decomposition(A, b, precision=ui.doubleSpinBox.value(), steps=True)
+                st = tm.time()
+                finals = solver.solve().tolist()
+                ex_time = tm.time() - st
+                steps = solver.ans_str
+            except(ValueError):
+                setAnsWindowError("error")
+                return
 
     createTextFile(steps)
     setAnsWindow(finals, ex_time, iterations)
@@ -190,6 +212,7 @@ if __name__ == "__main__":
     ui.setupUi(Form)
     handleMethodChange()
     handleSizeChange()
+    segnificantFiguresChange()
     ui.methodBox.currentIndexChanged.connect(handleMethodChange)
     ui.Size.valueChanged.connect(handleSizeChange)
     ui.Sbmit.clicked.connect(evaluate)

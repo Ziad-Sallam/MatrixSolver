@@ -1,4 +1,5 @@
 import numpy as np
+import time  # Importing time module for execution time measurement
 
 class LU_Decomposition:
     def __init__(self, A, B, precision=6, steps=False):
@@ -120,14 +121,18 @@ class LU_Decomposition:
 
     def solve(self):
         """Solve the system of equations using LU Decomposition."""
+        start_time = time.time()  # Start timing
+
         # Perform LU Decomposition
         L, U = self.decompose()
 
         # Check for no solution or infinite solutions
         solution_status = self.check_for_solution()
         if solution_status is False:
+            print(f"Execution Time: {time.time() - start_time:.6f} seconds")
             return None  # No solution
         elif solution_status is None:
+            print(f"Execution Time: {time.time() - start_time:.6f} seconds")
             return "Infinite solutions"
 
         # Solve L * Y = B
@@ -136,6 +141,8 @@ class LU_Decomposition:
         # Solve U * X = Y
         X = self.back_substitution(U, Y)
 
+        # End timing and print execution time
+        print(f"Execution Time: {time.time() - start_time:.6f} seconds")
         return X
 
 

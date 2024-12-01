@@ -15,7 +15,7 @@ class LUDecomposition:
         U = self.A.copy()
 
         print("Starting LU Decomposition...")
-        self.ans_str += "Starting LU Decomposition...\n"
+        self.ans_str += "\nStarting LU Decomposition...\n"
 
         for i in range(n):
             L[i][i] = 1  # Diagonal of L is 1
@@ -33,7 +33,7 @@ class LUDecomposition:
                     self.display_matrices(L, U)
 
         print("LU Decomposition complete.")
-        self.ans_str += "LU Decomposition complete.\n"
+        self.ans_str += "\nLU Decomposition complete.\n"
         return L, U
 
     def forward_substitution(self, L, B):
@@ -42,7 +42,7 @@ class LUDecomposition:
         Y = np.zeros(n)
 
         print("Solving L * Y = B...")
-        self.ans_str += "Solving L * Y = B...\n"
+        self.ans_str += "\nSolving L * Y = B...\n"
 
         for i in range(n):
             sum_ly = sum(L[i][j] * Y[j] for j in range(i))
@@ -53,7 +53,7 @@ class LUDecomposition:
                 self.ans_str += f"Step {i+1}: Y[{i+1}] = ({B[i]:.{self.precision}f} - ({sum_ly:.{self.precision}f})) / {L[i][i]:.{self.precision}f} = {Y[i]:.{self.precision}f}\n"
 
         print(f"Y Vector: {Y}\n")
-        self.ans_str += f"Y Vector: {Y}\n"
+        self.ans_str += f"\nY Vector: {Y}\n"
         return Y
 
     def back_substitution(self, U, Y):
@@ -62,7 +62,7 @@ class LUDecomposition:
         X = np.zeros(n)
 
         print("Solving U * X = Y...")
-        self.ans_str += "Solving U * X = Y...\n"
+        self.ans_str += "\nSolving U * X = Y...\n"
 
         for i in range(n - 1, -1, -1):
             sum_ux = sum(U[i][j] * X[j] for j in range(i + 1, n))
@@ -73,22 +73,29 @@ class LUDecomposition:
                 self.ans_str += f"Step {n-i}: X[{i+1}] = ({Y[i]:.{self.precision}f} - ({sum_ux:.{self.precision}f})) / {U[i][i]:.{self.precision}f} = {X[i]:.{self.precision}f}\n"
 
         print(f"Solution Vector X: {X}\n")
-        self.ans_str += f"Solution Vector X: {X}\n"
+        self.ans_str += f"\nSolution Vector X: {X}\n"
         return X
 
     def display_matrices(self, L, U):
         """Display the current state of L and U matrices."""
         print("L Matrix:")
+        self.ans_str += "\nL Matrix:\n"
         for row in L:
             print(" ".join([f"{val:.{self.precision}f}" for val in row]))
+            self.ans_str += f'\n{" ".join([f"{val:.{self.precision}f}" for val in row])}'
         print("\nU Matrix:")
+        self.ans_str += "\nU Matrix:\n"
         for row in U:
             print(" ".join([f"{val:.{self.precision}f}" for val in row]))
+            self.ans_str+= f'\n{" ".join([f"{val:.{self.precision}f}" for val in row])}'
+        self.ans_str += "\n"
         print("-" * 50)
+        self.ans_str += "-" * 50
 
     def solve(self):
         """Solve the system of equations using LU Decomposition."""
         print("The initial matrix A and vector B:")
+        self.ans_str += "The initial matrix A and vector B:\n"
         self.display_matrices(np.eye(len(self.A)), self.A)
 
         # Perform LU Decomposition

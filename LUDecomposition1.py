@@ -1,62 +1,41 @@
+import time
 import numpy as np
 
-class LU_Decomposition:
-    def __init__(self, A, B, precision=6, steps=False):
+class LUDecomposition:
+    def __init__(self, A, B, steps=False, significant_digits=6):
         self.A = np.array(A, dtype=float)
         self.B = np.array(B, dtype=float)
-        self.n = len(A)
-        self.L = np.zeros_like(self.A)
-        self.U = np.zeros_like(self.A)
-        self.precision = precision
         self.steps = steps
+        self.precision = significant_digits
         self.ans_str = ""
 
     def decompose(self):
-        """LU decomposition (L and U matrices) using the Crout method"""
-        for i in range(self.n):
-            # Calculate L[i, j] elements
-            for j in range(i + 1):
-                sum_LU = 0
-                for k in range(j):
-                    sum_LU += self.L[i][k] * self.U[k][j]
-                self.L[i][j] = self.A[i][j] - sum_LU
-                # Print L matrix elements at each step
+        """Perform LU Decomposition of matrix A."""
+        n = len(self.A)
+        L = np.zeros_like(self.A)
+        U = self.A.copy()
+
+        print("Starting LU Decomposition...")
+        self.ans_str += "Starting LU Decomposition...\n"
+
+        for i in range(n):
+            L[i][i] = 1  # Diagonal of L is 1
+            if U[i][i] == 0:  # Check if pivot is zero
+                raise ValueError(f"Matrix is singular, cannot perform LU decomposition (zero pivot at row {i+1})")
+
+            for j in range(i + 1, n):
+                factor = U[j][i] / U[i][i]
+                L[j][i] = factor
+                U[j, i:] -= factor * U[i, i:]
+                
                 if self.steps:
-                    print(f"L[{i+1},{j+1}] = {self.L[i][j]:.{self.precision}f}")
+                    print(f"R{j+1} <- R{j+1} - ({factor:.{self.precision}f}) * R{i+1}")
+                    self.ans_str += f"R{j+1} <- R{j+1} - ({factor:.{self.precision}f}) * R{i+1}\n"
+                    self.display_matrices(L, U)
 
-            # Calculate U[i, j] elements
-            for j in range(i, self.n):
-                if self.L[i][i] != 0:
-                    sum_LU = 0
-                    for k in range(i):
-                        sum_LU += self.L[i][k] * self.U[k][j]
-                    self.U[i][j] = (self.A[i][j] - sum_LU) / self.L[i][i]
-                    # Print U matrix elements at each step
-                    if self.steps:
-                        print(f"U[{i+1},{j+1}] = {self.U[i][j]:.{self.precision}f}")
-
-            # Display the matrices after each step
-            if self.steps:
-                self.display_matrices(self.L, self.U)
-                print(f"After Step {i+1}:\n")
-
-        return self.L, self.U
-
-    def check_for_solution(self):
-        """Check if the system has no solution or infinitely many solutions."""
-        # Check for zero rows in U or L
-        for i in range(self.n):
-            if np.allclose(self.L[i], 0) and not np.allclose(self.B[i], 0):
-                print("No solution: Row in L is zero, but corresponding B is non-zero.")
-                return False
-            if np.allclose(self.U[i], 0) and not np.allclose(self.B[i], 0):
-                print("No solution: Row in U is zero, but corresponding B is non-zero.")
-                return False
-            if np.allclose(self.U[i], 0) and np.allclose(self.B[i], 0):
-                print("Infinite solutions: Row in U is zero and corresponding B is zero.")
-                return None  # Infinite solutions
-
-        return True  # The system can be solved
+        print("LU Decomposition complete.")
+        self.ans_str += "LU Decomposition complete.\n"
+        return L, U
 
     def forward_substitution(self, L, B):
         """Solve L * Y = B using forward substitution."""
@@ -67,9 +46,7 @@ class LU_Decomposition:
         self.ans_str += "Solving L * Y = B...\n"
 
         for i in range(n):
-            sum_ly = 0
-            for j in range(i):
-                sum_ly += L[i][j] * Y[j]
+            sum_ly = sum(L[i][j] * Y[j] for j in range(i))
             Y[i] = (B[i] - sum_ly) / L[i][i]
 
             if self.steps:
@@ -89,9 +66,7 @@ class LU_Decomposition:
         self.ans_str += "Solving U * X = Y...\n"
 
         for i in range(n - 1, -1, -1):
-            sum_ux = 0
-            for j in range(i + 1, n):
-                sum_ux += U[i][j] * X[j]
+            sum_ux = sum(U[i][j] * X[j] for j in range(i + 1, n))
             X[i] = (Y[i] - sum_ux) / U[i][i]
 
             if self.steps:
@@ -120,26 +95,29 @@ class LU_Decomposition:
 
     def solve(self):
         """Solve the system of equations using LU Decomposition."""
-        # Perform LU Decomposition
-        L, U = self.decompose()
+        start_time = time.time()  # Start timer
+        print("The initial matrix A and vector B:")
+        self.display_matrices(np.eye(len(self.A)), self.A)
 
-        # Check for no solution or infinite solutions
-        solution_status = self.check_for_solution()
-        if solution_status is False:
-            return None  # No solution
-        elif solution_status is None:
-            return "Infinite solutions"
+        # Perform LU Decomposition
+        try:
+            L, U = self.decompose()
+        except ValueError as e:
+            print(str(e))
+            return None
 
         # Solve L * Y = B
         Y = self.forward_substitution(L, self.B)
 
         # Solve U * X = Y
         X = self.back_substitution(U, Y)
+        execution_time = time.time() - start_time  # End timer
 
+        print(f"Execution Time: {execution_time:.6f} seconds")
+        self.ans_str += f"Execution Time: {execution_time:.6f} seconds\n"
         return X
 
 
-# Test the LU_Decomposition class
 if __name__ == "__main__":
     # Example input
     A = [
@@ -156,17 +134,15 @@ if __name__ == "__main__":
     steps_choice = input("Show steps during calculation? (y/n, default n): ").strip().lower()
     steps = steps_choice == 'y'
 
-    # Create an instance of the LU_Decomposition class
-    solver = LU_Decomposition(A, B, precision=precision, steps=steps)
-    
+    # Create an instance of the LUDecomposition class
+    solver = LUDecomposition(A, B, steps=steps, significant_digits=precision)
+
     # Solve the system
     X = solver.solve()
 
-    if X is None:
-        print("The system has no solution.")
-    elif X == "Infinite solutions":
-        print("The system has infinitely many solutions.")
-    else:
+    if X is not None:
         print("\nFinal Solution:")
         for i, val in enumerate(X):
             print(f"x{i+1} = {val:.{precision}f}")
+    else:
+        print("The system has no solution or infinite solutions.")

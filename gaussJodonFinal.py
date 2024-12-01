@@ -109,7 +109,7 @@ class GaussJordanElimination:
         # Forward elimination to transform the system to upper triangular form
         is_valid, B_result = self.forward_elimination()
         if not is_valid:
-            return  # No valid solution (either no solution or infinite)
+            return False  # No valid solution (either no solution or infinite)
 
         # Back substitution to get the solutions if the system is consistent
         solutions = self.back_substitution()
@@ -117,7 +117,9 @@ class GaussJordanElimination:
         # Check for infinite solutions
         if np.allclose(self.A[-1], np.zeros_like(self.A[-1])) and np.allclose(self.B[-1], 0):
             print("The system has infinite solutions.")
+
             self.ans_str += "The system has infinite solutions."
+            return False
         else:
             print("\nSolutions:")
             self.ans_str += "\nSolutions:\n"
@@ -129,6 +131,7 @@ class GaussJordanElimination:
         execution_time = end_time - start_time
         print(f"\nExecution time: {execution_time:.6f} seconds")
         self.ans_str += f"\nExecution time: {execution_time:.6f} seconds"
+        return True
 
 
 # Example setup with matrices predefined

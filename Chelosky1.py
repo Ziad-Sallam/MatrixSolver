@@ -1,4 +1,5 @@
 import numpy as np
+import time  # Import time module for measuring execution time
 
 class Cholesky_Decomposition:
     def __init__(self, A, B, precision=6, steps=False):
@@ -45,11 +46,9 @@ class Cholesky_Decomposition:
                         sum_L += self.L[i][k] * self.L[j][k]
                     self.L[i][j] = (self.A[i][j] - sum_L) / self.L[j][j]
                 
-                # Print L matrix elements at each step
                 if self.steps:
                     print(f"L[{i+1},{j+1}] = {self.L[i][j]:.{self.precision}f}")
             
-            # Display the matrix L after each step
             if self.steps:
                 self.display_matrix(self.L)
                 print(f"After Step {i+1}:\n")
@@ -100,24 +99,18 @@ class Cholesky_Decomposition:
         self.ans_str += f"Solution Vector X: {X}\n"
         return X
 
-    def display_matrices(self, L, U):
-        """Display the current state of L and U matrices."""
+    def display_matrix(self, L):
+        """Display the current state of L matrix."""
         print("L Matrix:")
-        self.ans_str += "\nL Matrix:\n"
         for row in L:
             print(" ".join([f"{val:.{self.precision}f}" for val in row]))
-            self.ans_str += f'\n{" ".join([f"{val:.{self.precision}f}" for val in row])}'
-        print("\nU Matrix:")
-        self.ans_str += "\nU Matrix:\n"
-        for row in U:
-            print(" ".join([f"{val:.{self.precision}f}" for val in row]))
-            self.ans_str+= f'\n{" ".join([f"{val:.{self.precision}f}" for val in row])}'
-        self.ans_str += "\n"
+            self.ans_str += f'\n{" ".join([f"{val:.{self.precision}f}" for val in row])}\n'
         print("-" * 50)
-        self.ans_str += "-" * 50
 
     def solve(self):
         """Solve the system of equations using Cholesky Decomposition."""
+        start_time = time.time()  # Start timing
+        
         # Perform Cholesky Decomposition
         L = self.decompose()
 
@@ -126,22 +119,22 @@ class Cholesky_Decomposition:
 
         # Solve L^T * X = Y
         X = self.back_substitution(L, Y)
-
+        
+        end_time = time.time()  # End timing
+        print(f"\nExecution Time: {end_time - start_time:.6f} seconds")
         return X
 
 
 # Test the Cholesky_Decomposition class
 if __name__ == "__main__":
-    # Example input for a symmetric positive-definite matrix
     A = [
         [6, 3, 4, 0],
         [3, 6, 5, 0],
         [4, 5, 10, 0],
-        [0, 0, 0, 0]
+        [0, 0, 0, 12]
     ]
     B = [0, 0, 0, 5]
 
-    # User input for precision and steps
     precision_input = input("Enter the number of significant figures (default 6): ")
     precision = int(precision_input) if precision_input else 6
 
@@ -149,10 +142,7 @@ if __name__ == "__main__":
     steps = steps_choice == 'y'
 
     try:
-        # Create an instance of the Cholesky_Decomposition class
         solver = Cholesky_Decomposition(A, B, precision=precision, steps=steps)
-
-        # Solve the system
         X = solver.solve()
 
         print("\nFinal Solution:")
@@ -160,4 +150,4 @@ if __name__ == "__main__":
             print(f"x{i+1} = {val:.{precision}f}")
     
     except ValueError as e:
-        print(e)  # Just print the error message, without traceback
+        print(e)
