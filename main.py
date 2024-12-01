@@ -22,6 +22,9 @@ def handleMethodChange():
         ui.numberOfIterations.hide()
         ui.numberOfIterationsLabel.hide()
         ui.initials.hide()
+        ui.numberOfIterationsLabel_2.hide()
+        ui.comboBox.hide()
+
     elif ui.methodBox.currentText() == "Gauss seidel" or ui.methodBox.currentText() == "Jacobi Method":
         ui.formatBox.hide()
         ui.formatLabel.hide()
@@ -30,7 +33,11 @@ def handleMethodChange():
         ui.numberOfIterations.show()
         ui.numberOfIterationsLabel.show()
         ui.initials.show()
+        ui.numberOfIterationsLabel_2.hide()
+        ui.comboBox.hide()
     else:
+        ui.numberOfIterationsLabel_2.show()
+        ui.comboBox.show()
         ui.formatBox.hide()
         ui.formatLabel.hide()
         ui.error.hide()
@@ -114,7 +121,11 @@ def evaluate():
             iterations = iteration
             steps = solver.ans_str
     elif method == "Gauss Elimination":
-        solver = GaussianElimination(A, b, scaling=True, steps=True, significant_digits=ui.doubleSpinBox.value())
+        scale = False
+        if ui.comboBox.currentText() == "Scaling":
+            scale = True
+        print(scale)
+        solver = GaussianElimination(A, b, scaling=scale, steps=True, significant_digits=ui.doubleSpinBox.value())
         if not solver.solve():
             ex_time = ""
             finals = []
@@ -132,7 +143,12 @@ def evaluate():
             ex_time = solver.execution_time
             steps = solver.ans_str
     elif method == "Gauss Jordan":
-        solver = GaussJordanElimination(A, b, scaling=True, steps=True, significant_digits=ui.doubleSpinBox.value())
+        scale = False
+        if ui.comboBox.currentText() == "Scaling":
+            scale = True
+        print(scale)
+
+        solver = GaussJordanElimination(A, b, scaling=scale, steps=True, significant_digits=ui.doubleSpinBox.value())
         st = tm.time()
         if not solver.solve():
             ex_time = ""
@@ -236,7 +252,6 @@ if __name__ == "__main__":
     ui.Size.valueChanged.connect(handleSizeChange)
     ui.Sbmit.clicked.connect(evaluate)
     ui.doubleSpinBox.valueChanged.connect(segnificantFiguresChange)
-
     ans = QtWidgets.QWidget()
     ui1 = Ui_ans()
     ui1.setupUi(ans)

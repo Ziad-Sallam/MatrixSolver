@@ -22,7 +22,7 @@
      <height>191</height>
     </rect>
    </property>
-   <layout class="QGridLayout" name="configGrid" rowstretch="0,0,0,0" columnstretch="0,0,0,0,0,0">
+   <layout class="QGridLayout" name="configGrid" rowstretch="0,0,0,0" columnstretch="0,0,0,0,0">
     <property name="sizeConstraint">
      <enum>QLayout::SetNoConstraint</enum>
     </property>
@@ -250,7 +250,7 @@
        <enum>Qt::RightToLeft</enum>
       </property>
       <property name="text">
-       <string>input:</string>
+       <string>Scaling/Pivoting</string>
       </property>
      </widget>
     </item>
@@ -258,12 +258,12 @@
      <widget class="QComboBox" name="comboBox">
       <item>
        <property name="text">
-        <string>Numeric</string>
+        <string>Partial Pivoting</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>Charcters</string>
+        <string>Scaling</string>
        </property>
       </item>
      </widget>
