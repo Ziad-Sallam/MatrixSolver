@@ -8,6 +8,7 @@ class LUDecomposition:
         self.steps = steps
         self.precision = significant_digits
         self.ans_str = ""
+        self.isSingular = False
 
     def decompose(self):
         """Perform LU Decomposition of matrix A."""
@@ -21,7 +22,9 @@ class LUDecomposition:
         for i in range(n):
             L[i][i] = 1  # Diagonal of L is 1
             if U[i][i] == 0:  # Check if pivot is zero
-                raise ValueError(f"Matrix is singular, cannot perform LU decomposition (zero pivot at row {i+1})")
+                self.isSingular = True
+                return
+                #raise ValueError(f"Matrix is singular, cannot perform LU decomposition (zero pivot at row {i+1})")
 
             for j in range(i + 1, n):
                 factor = U[j][i] / U[i][i]

@@ -2,7 +2,7 @@ import numpy as np
 import time
 
 class JacobiSolver: 
-    def __init__(self, A, b, initial_guess=None, max_iter=100, tol=1e-5, precision=None, scaling=False):
+    def __init__(self, A, b, initial_guess=None, max_iter=100, tol=1e-5, precision=None):
         self.A = np.array(A, dtype=float)
         self.b = np.array(b, dtype=float)
         self.num_variables = len(b)
@@ -10,16 +10,7 @@ class JacobiSolver:
         self.max_iter = max_iter
         self.tol = tol
         self.precision = precision if precision is not None else 6
-        self.scaling = scaling
-        self.ans_str = ""
-        if self.scaling:
-            self.apply_scaling()
-
-    def apply_scaling(self):
-        for i in range(self.num_variables):
-            max_coeff = max(abs(self.A[i]))
-            self.A[i] /= max_coeff
-            self.b[i] /= max_coeff
+        self.ans_str =""
 
     def max_error(self, x_new, x_old):
         max_err = 0
@@ -29,6 +20,22 @@ class JacobiSolver:
             else:
                 max_err = max(max_err, abs(x_new[i] - x_old[i]))
         return max_err
+
+    def format_significant_figures(self, number):
+        # Format the number to the specified significant figures
+        if number == 0:
+            return f"{number:.{self.precision}f}"
+        
+        # Determine the number of digits before the decimal point
+        num_digits_before_decimal = len(str(int(abs(number))))  
+        
+        # Calculate how many decimal places we need
+        decimal_places = self.precision - num_digits_before_decimal
+        
+        if decimal_places < 0:
+            return f"{number:.{self.precision}f}"  # For very large numbers, just round to the precision
+        
+        return f"{number:.{decimal_places}f}"
 
     def jacobi_iteration(self, single_step=False):
         x_old = self.initial_guess
@@ -46,16 +53,17 @@ class JacobiSolver:
                     if j != i:
                         term = self.A[i][j] * x_old[j]
                         sum_ += term
-                        terms.append(f"{self.A[i][j]} * {x_old[j]:.{self.precision}f}")
+                        terms.append(f"{self.A[i][j]} * {self.format_significant_figures(x_old[j])}")
+
                 
                 x_new[i] = (self.b[i] - sum_) / self.A[i][i]
                 computation_details = f"x{i + 1} = ({self.b[i]} - ({' + '.join(terms)})) / {self.A[i][i]}"
-                print(f"    {computation_details} = {x_new[i]:.{self.precision}f}")
-                self.ans_str+=f"\n    {computation_details} = {x_new[i]:.{self.precision}f}"
+                print(f"    {computation_details} = {self.format_significant_figures(x_new[i])}")
+                self.ans_str += f"\n    {computation_details} = {self.format_significant_figures(x_new[i])}"
             
             if single_step:
                 print(f"    Current solution: {np.round(x_new, self.precision)}")
-                self.ans_str+=f"\n    Current solution: {np.round(x_new, self.precision)}\n"
+                self.ans_str += f"\n    Current solution: {np.round(x_new, self.precision)}"
             if self.max_error(x_new, x_old) < self.tol:
                 break
 
@@ -79,10 +87,11 @@ if __name__ == "__main__":
     precision_input = input("Enter the number of significant figures (default 6): ")
     precision = int(precision_input) if precision_input else None
 
-    scaling_choice = input("Apply scaling? (y/n, default n): ").strip().lower()
-    scaling = scaling_choice == 'y'
+    # Get initial guess from user
+    initial_guess_input = input(f"Enter the initial guess as space-separated values (default: {' '.join(map(str, np.zeros(len(B))))}): ")
+    initial_guess = np.array([float(x) for x in initial_guess_input.split()]) if initial_guess_input else np.zeros(len(B))
 
-    solver = JacobiSolver(A, B, max_iter=100, tol=1e-5, precision=precision, scaling=scaling)
+    solver = JacobiSolver(A, B, initial_guess=initial_guess, max_iter=100, tol=1e-5, precision=precision)
 
     # Solve with optional single-step simulation
     step_mode = input("Enable single-step mode? (y/n, default n): ").strip().lower() == 'y'

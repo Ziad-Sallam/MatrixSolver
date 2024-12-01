@@ -1,3 +1,4 @@
+import math
 import time as tm
 import subprocess
 from gui import Ui_Form
@@ -7,12 +8,12 @@ from Jacobi import JacobiSolver
 from GaussFinal import GaussianElimination
 from answers import Ui_ans
 from gaussJodonFinal import GaussJordanElimination
-from LUDecomposition1 import LUDecomposition
-from crout1 import LU_Decomposition as CroutDecomposition
-from Chelosky1 import Cholesky_Decomposition
+from LUDecomposition import LUDecomposition
+from crout import LU_Decomposition as CroutDecomposition
+from Chelosky import Cholesky_Decomposition
 
 def handleMethodChange():
-    print("heeeelloooo"+str(len(ui.matrixBox)))
+
     if ui.methodBox.currentText() == "LU Decompisition":
         ui.formatBox.show()
         ui.formatLabel.show()
@@ -59,7 +60,7 @@ def handleSizeChange():
 
 def segnificantFiguresChange():
     x = ui.doubleSpinBox.value()
-    ui.error.setDecimals(x)
+
     for i in range(16):
         ui.initialsList[i][1].setDecimals(x)
 
@@ -125,12 +126,14 @@ def evaluate():
                 setAnsWindowError("The system has infinite solutions")
                 return
         else:
+            print("teessssstt")
             print(solver.finals)
             finals = solver.finals
             ex_time = solver.execution_time
             steps = solver.ans_str
     elif method == "Gauss Jordan":
-        solver = GaussJordanElimination(A,b,scaling=True, steps=True, significant_digits=ui.doubleSpinBox.value())
+        solver = GaussJordanElimination(A, b, scaling=True, steps=True, significant_digits=ui.doubleSpinBox.value())
+        st = tm.time()
         if not solver.solve():
             ex_time = ""
             finals = []
@@ -141,6 +144,11 @@ def evaluate():
             elif solver.infiniteFlag:
                 setAnsWindowError("The system has infinite solutions")
                 return
+        else:
+            ex_time = tm.time() - st
+            print(solver.finals)
+            finals = solver.finals
+            steps = solver.ans_str
     elif method == "LU Decompisition":
         if ui.formatBox.currentText() == "Doolittle form":
             solver = LUDecomposition(A, b, significant_digits=ui.doubleSpinBox.value(), steps=True)
@@ -148,13 +156,19 @@ def evaluate():
             finals = solver.solve().tolist()
             ex_time = tm.time() - st
             steps = solver.ans_str
+            if solver.isSingular:
+                setAnsWindowError("the matrix is singular")
 
         elif ui.formatBox.currentText() == "Crout form":
             solver = CroutDecomposition(A, b, precision=ui.doubleSpinBox.value(), steps=True)
             st = tm.time()
-            finals = solver.solve().tolist()
+            finals = solver.solve()
+            for i in range(len(finals)):
+                finals[i] = round(finals[i], ui.doubleSpinBox.value())
             ex_time = tm.time() - st
             steps = solver.ans_str
+            print(finals)
+
         elif ui.formatBox.currentText() == "Cholesky form":
             try:
                 solver = Cholesky_Decomposition(A, b, precision=ui.doubleSpinBox.value(), steps=True)
@@ -162,10 +176,13 @@ def evaluate():
                 finals = solver.solve().tolist()
                 ex_time = tm.time() - st
                 steps = solver.ans_str
-            except(ValueError):
+            except Exception as e:
                 setAnsWindowError("error")
+                ans.show()
                 return
 
+    for i in range(len(finals)):
+        finals[i] = round(finals[i], ui.doubleSpinBox.value())
     createTextFile(steps)
     setAnsWindow(finals, ex_time, iterations)
     ans.show()
@@ -176,7 +193,7 @@ def handleDetailedSol():
     subprocess.run(command, shell=True, check=True, text=True, capture_output=True)
 
 
-def setAnsWindow(finals,time,iterations):
+def setAnsWindow(finals, time, iterations):
     ui1.iterations.setText(str(iterations))
     ui1.error.setText(str(ui.error.value()))
     ui1.Method.setText(str(ui.methodBox.currentText()))
@@ -210,6 +227,8 @@ if __name__ == "__main__":
     Form = QtWidgets.QWidget()
     ui = Ui_Form()
     ui.setupUi(Form)
+    ui.error.setDecimals(7)
+    ui.doubleSpinBox.setValue(6)
     handleMethodChange()
     handleSizeChange()
     segnificantFiguresChange()

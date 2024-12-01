@@ -1,4 +1,5 @@
 import numpy as np
+import time  # Import time module for measuring execution time
 
 class Cholesky_Decomposition:
     def __init__(self, A, B, precision=6, steps=False):
@@ -26,6 +27,13 @@ class Cholesky_Decomposition:
             print("Not positive semi-definite")
             return False
 
+    def round_significant(self, value, digits):
+        """Round the value to the specified number of significant digits."""
+        if value == 0:
+            return 0
+        else:
+            return round(value, digits - int(np.floor(np.log10(abs(value)))) - 1)
+
     def decompose(self):
         """Cholesky decomposition: A = LL^T"""
         if not self.is_symmetric():
@@ -45,11 +53,12 @@ class Cholesky_Decomposition:
                         sum_L += self.L[i][k] * self.L[j][k]
                     self.L[i][j] = (self.A[i][j] - sum_L) / self.L[j][j]
                 
-                # Print L matrix elements at each step
+                # Apply significant digits rounding
+                self.L[i][j] = self.round_significant(self.L[i][j], self.precision)
+
                 if self.steps:
                     print(f"L[{i+1},{j+1}] = {self.L[i][j]:.{self.precision}f}")
             
-            # Display the matrix L after each step
             if self.steps:
                 self.display_matrix(self.L)
                 print(f"After Step {i+1}:\n")
@@ -69,6 +78,9 @@ class Cholesky_Decomposition:
             for j in range(i):
                 sum_ly += L[i][j] * Y[j]
             Y[i] = (B[i] - sum_ly) / L[i][i]
+
+            # Apply significant digits rounding
+            Y[i] = self.round_significant(Y[i], self.precision)
 
             if self.steps:
                 print(f"Step {i+1}: Y[{i+1}] = ({B[i]:.{self.precision}f} - ({sum_ly:.{self.precision}f})) / {L[i][i]:.{self.precision}f} = {Y[i]:.{self.precision}f}")
@@ -92,6 +104,9 @@ class Cholesky_Decomposition:
                 sum_lx += L[j][i] * X[j]
             X[i] = (Y[i] - sum_lx) / L[i][i]
 
+            # Apply significant digits rounding
+            X[i] = self.round_significant(X[i], self.precision)
+
             if self.steps:
                 print(f"Step {n-i}: X[{i+1}] = ({Y[i]:.{self.precision}f} - ({sum_lx:.{self.precision}f})) / {L[i][i]:.{self.precision}f} = {X[i]:.{self.precision}f}")
                 self.ans_str += f"Step {n-i}: X[{i+1}] = ({Y[i]:.{self.precision}f} - ({sum_lx:.{self.precision}f})) / {L[i][i]:.{self.precision}f} = {X[i]:.{self.precision}f}\n"
@@ -100,24 +115,17 @@ class Cholesky_Decomposition:
         self.ans_str += f"Solution Vector X: {X}\n"
         return X
 
-    def display_matrices(self, L, U):
-        """Display the current state of L and U matrices."""
+    def display_matrix(self, L):
+        """Display the current state of L matrix."""
         print("L Matrix:")
-        self.ans_str += "\nL Matrix:\n"
         for row in L:
             print(" ".join([f"{val:.{self.precision}f}" for val in row]))
-            self.ans_str += f'\n{" ".join([f"{val:.{self.precision}f}" for val in row])}'
-        print("\nU Matrix:")
-        self.ans_str += "\nU Matrix:\n"
-        for row in U:
-            print(" ".join([f"{val:.{self.precision}f}" for val in row]))
-            self.ans_str+= f'\n{" ".join([f"{val:.{self.precision}f}" for val in row])}'
-        self.ans_str += "\n"
         print("-" * 50)
-        self.ans_str += "-" * 50
 
     def solve(self):
         """Solve the system of equations using Cholesky Decomposition."""
+        start_time = time.time()  # Start timing
+        
         # Perform Cholesky Decomposition
         L = self.decompose()
 
@@ -126,22 +134,22 @@ class Cholesky_Decomposition:
 
         # Solve L^T * X = Y
         X = self.back_substitution(L, Y)
-
+        
+        end_time = time.time()  # End timing
+        print(f"\nExecution Time: {end_time - start_time:.6f} seconds")
         return X
 
 
 # Test the Cholesky_Decomposition class
 if __name__ == "__main__":
-    # Example input for a symmetric positive-definite matrix
     A = [
         [6, 3, 4, 0],
         [3, 6, 5, 0],
         [4, 5, 10, 0],
-        [0, 0, 0, 0]
+        [0, 0, 0, 12]
     ]
     B = [0, 0, 0, 5]
 
-    # User input for precision and steps
     precision_input = input("Enter the number of significant figures (default 6): ")
     precision = int(precision_input) if precision_input else 6
 
@@ -149,10 +157,7 @@ if __name__ == "__main__":
     steps = steps_choice == 'y'
 
     try:
-        # Create an instance of the Cholesky_Decomposition class
         solver = Cholesky_Decomposition(A, B, precision=precision, steps=steps)
-
-        # Solve the system
         X = solver.solve()
 
         print("\nFinal Solution:")
@@ -160,4 +165,4 @@ if __name__ == "__main__":
             print(f"x{i+1} = {val:.{precision}f}")
     
     except ValueError as e:
-        print(e)  # Just print the error message, without traceback
+        print(e)

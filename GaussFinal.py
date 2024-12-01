@@ -13,8 +13,15 @@ class GaussianElimination:
         self.ans = []
         self.ans_str = ""
         self.finals = []
-        self.infiniteFlag = False
         self.noSolution = False
+        self.infiniteFlag = False
+
+    def format_number(self, num):
+        """Format a number to the specified significant digits."""
+        if num == 0:
+            return f"{0:.{self.precision}g}"
+        else:
+            return f"{num:.{self.precision}g}"
 
     def normalize_for_pivoting(self):
         """Normalize each row by dividing all elements by the largest element in that row."""
@@ -24,7 +31,7 @@ class GaussianElimination:
             if max_element != 0:
                 normalized_A[i] = normalized_A[i] / max_element
             if self.steps:
-                print(f"Normalized row {i+1} for pivoting: {normalized_A[i]}")
+                print(f"Normalized row {i+1} for pivoting: {list(map(self.format_number, normalized_A[i]))}")
         return normalized_A
 
     def forward_elimination(self):
@@ -32,8 +39,11 @@ class GaussianElimination:
         n = len(self.A)
 
         for i in range(n):
-            # Normalize the matrix for pivoting
-            normalized_A = self.normalize_for_pivoting()
+            if self.scaling:
+                # Normalize the matrix for pivoting
+                normalized_A = self.normalize_for_pivoting()
+            else:
+                normalized_A = self.A  # Use the original matrix when scaling is not enabled
 
             # Pivoting: Find the row with the maximum value in the current column
             pivot_row = max(range(i, n), key=lambda x: abs(normalized_A[x, i]))
@@ -64,8 +74,8 @@ class GaussianElimination:
                     self.A[j, i:] -= ratio * self.A[i, i:]
                     self.B[j] -= ratio * self.B[i]
                     if self.steps:
-                        print(f"R{j+1} <- R{j+1} - ({ratio:.2f}) * R{i+1}")
-                        self.ans_str += f"\nR{j+1} <- R{j+1} - ({ratio:.2f}) * R{i+1}"
+                        print(f"R{j+1} <- R{j+1} - ({self.format_number(ratio)}) * R{i+1}")
+                        self.ans_str += f"\nR{j+1} <- R{j+1} - ({self.format_number(ratio)}) * R{i+1}"
                         self.display_matrix()
 
         return True, self.B  # Continue if there's a valid solution
@@ -80,8 +90,8 @@ class GaussianElimination:
                 sum -= self.A[i, j] * x[j]
             x[i] = sum / self.A[i, i]
             if self.steps:
-                print(f"x[{i}] = {x[i]:.{self.precision}f}")
-                self.ans_str += f"\nx[{i}] = {x[i]:.{self.precision}f}"
+                print(f"x[{i}] = {self.format_number(x[i])}")
+                self.ans_str += f"\nx[{i}] = {self.format_number(x[i])}"
         return x
 
     def display_matrix(self):
@@ -91,8 +101,8 @@ class GaussianElimination:
         print("[", end="")
         self.ans_str += "\n["
         for row in augmented_matrix:
-            print(" ".join([f"{val:.{self.precision}f}" for val in row]), end=" \n")
-            self.ans_str += " ".join([f"{val:.{self.precision}f}" for val in row]) + "\n"
+            print(" ".join([self.format_number(val) for val in row]), end=" \n")
+            self.ans_str += " ".join([self.format_number(val) for val in row]) + "\n"
         print("]")
         self.ans_str += "]\n"
         print("-" * 50)
@@ -109,7 +119,7 @@ class GaussianElimination:
         # Forward elimination to transform the system to upper triangular form
         is_valid, B_result = self.forward_elimination()
         if not is_valid:
-            return False # No valid solution (either no solution or infinite)
+            return  # No valid solution (either no solution or infinite)
 
         # Back substitution to get the solutions if the system is consistent
         solutions = self.back_substitution()
@@ -117,30 +127,30 @@ class GaussianElimination:
         # Check for infinite solutions
         if np.allclose(self.A[-1], np.zeros_like(self.A[-1])) and np.allclose(self.B[-1], 0):
             print("The system has infinite solutions.")
-            self.ans_str += "The system has infinite solutions."
-            return False
+            self.infiniteFlag = True
+            self.ans_str += "The system has infinite solutions."   
         else:
             print("\nSolutions:")
             self.ans_str += "\nSolutions:\n"
             for i in range(len(solutions)):
-                print(f"{self.variables[i]} = {solutions[i]:.{self.precision}f}")
+                print(f"{self.variables[i]} = {self.format_number(solutions[i])}")
                 self.finals.append(solutions[i])
 
-        end_time = time.time()  # End measuring time
-        self.execution_time = end_time - start_time
-        print(f"\nExecution time: {self.execution_time:.6f} seconds")
-        self.ans_str += f"\nExecution time: {self.execution_time:.6f} seconds"
+        end_time = time.time()
+        self.execution_time = end_time - start_time# End measuring time
+        print(f"\nExecution time: {end_time - start_time:.6f} seconds")
+        self.ans_str += f"\nExecution time: {end_time - start_time:.6f} seconds"
         return True
 
 
 # Example setup with matrices predefined
 if __name__ == "__main__":
     A = [
-        [6.6, 5, 1],
-        [150, 8, 1],
-        [33, 12, 1]
+        [6, 6, 6],
+        [6, 6, 6],
+        [0, 0, 6]
     ]  # Example system
-    B = [10, 300, 15]
+    B = [6, 6, 0]   
 
     # User input for precision, scaling, and steps
     precision_input = input("Enter the number of significant figures (default 6): ")
