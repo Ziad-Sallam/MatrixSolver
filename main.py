@@ -4,7 +4,7 @@ import subprocess
 from gui import Ui_Form
 from PyQt6 import QtCore, QtGui, QtWidgets
 from gaussSeidel import GaussSeidelSolver
-from Jacobi import JacobiSolver
+from Jacobi1 import JacobiSolver
 from GaussFinal import GaussianElimination
 from answers import Ui_ans
 from gaussJodonFinal import GaussJordanElimination
