@@ -42,7 +42,6 @@ if __name__ == "__main__":
 # self.matrixScroll.setWidgetResizable(True)
 # self.matrixScroll.setWidget(self.matrixWidget)
 # self.matrixScroll.scroll(300, 300)
-#
 # self.matrixBox = []
 # for i in range(16):
 #     row = []
@@ -55,6 +54,20 @@ if __name__ == "__main__":
 #         input.setFixedWidth(70)
 #         row.append(input)
 #     self.matrixBox.append(row)
+#
+# # self.charWidget = QtWidgets.QWidget(self.matrixScroll)
+# # self.charBox = []
+# # for i in range(16):
+# #     row = []
+# #     for j in range(17):
+# #       input = QtWidgets.QLineEdit(self.charWidget)
+# #       input.setMaxLength(1)
+# #
+# #       input.move(70 * (j % 21), i * 34)
+# #       input.setFixedWidth(50)
+# #       row.append(input)
+# #     self.charBox.append(row)
+#
 #
 # self.matrixScroll.setWidget(self.matrixWidget)
 # self.matrixWidget.setObjectName("matrixWidget")
