@@ -12,6 +12,10 @@ from LUDecomposition import LUDecomposition
 from crout import LU_Decomposition as CroutDecomposition
 from Chelosky import Cholesky_Decomposition
 from gaussSymbols import GaussianElimination2
+from DolittleSYMBOLS import LUDecomposition2
+from JordonSYMBOLS import GaussJordanElimination2
+from CroutSYMBOL import LU_Decomposition_Symbolic2
+
 from sympy import Matrix
 import sympy as sp
 
@@ -93,7 +97,6 @@ def segnificantFiguresChange():
         for j in range(17):
             ui.matrixBox[i][j].setDecimals(x)
 
-
 def evaluateChar():
     ans.hide()
     size = ui.Size.value()
@@ -109,15 +112,41 @@ def evaluateChar():
         A.append(row)
         b.append(ui.charBox[i][size].text())
     print("hereeeeeee")
-    if ui.methodBox.currentText() == "Gauss Elimination":
+    if ui.methodBox.currentText() == "LU Decomposition":
+        solver = LUDecomposition2(A, b, significant_digits=ui.significantFig.value(), steps=True)
+        solver.show_steps = True  # Ensure steps are shown
+        solver.solve()  # Perform the LU decomposition and solve
+        createTextFile(str(solver.ans))
+        handleDetailedSol()
+    elif ui.methodBox.currentText() == "Gauss Elimination":
         solver = GaussianElimination2(A,b)
         solver.show_steps = True
         solver.solve()
         createTextFile(str(solver.ans))
-    handleDetailedSol()
+        handleDetailedSol()
+    elif ui.methodBox.currentText() == "LU Decomposition":
+        solver = LUDecomposition2(A, b, significant_digits=ui.significantFig.value(), steps=True)
+        solver.show_steps = True  # Ensure steps are shown
+        X = solver.solve()  # Perform the LU decomposition and solve
+        if X is not None:
+            createTextFile(str(solver.ans_str))  # Save the answer string with steps to a file
+            handleDetailedSol()  # Assuming this function processes the solution further
+        else:
+            print("The LU Decomposition did not result in a valid solution.")
 
-
-
+    elif ui.methodBox.currentText() == "Gauss Jordan":
+        solver = GaussJordanElimination2(A, b)
+        solver.show_steps = True
+        solver.solve()
+        createTextFile(str(solver.ans))
+        handleDetailedSol()
+    elif ui.methodBox.currentText() == "Crout":
+        solver = LU_Decomposition_Symbolic2(A, b, precision=ui.significantFig.value(), steps=True)
+        solver.show_steps = True
+        solver.solve()
+        createTextFile(str(solver.ans))
+        handleDetailedSol()
+    
 def evaluate():
     if ui.inputBox.currentText() == "Characters":
         evaluateChar()

@@ -1,7 +1,7 @@
 import sympy as sp
 import time  # Importing time module for execution time measurement
 
-class LU_Decomposition_Symbolic:
+class LU_Decomposition_Symbolic2:
     def __init__(self, A, B, steps=False):
         self.A = sp.Matrix(A)
         self.B = sp.Matrix(B)
@@ -100,7 +100,7 @@ if __name__ == "__main__":
     steps = steps_choice == 'y'
 
     # Create an instance of the LU_Decomposition_Symbolic class
-    solver = LU_Decomposition_Symbolic(A, B, steps=steps)
+    solver = LU_Decomposition_Symbolic2(A, B, steps=steps)
 
     # Solve the system
     X = solver.solve()

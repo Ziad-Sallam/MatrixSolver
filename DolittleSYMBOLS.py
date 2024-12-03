@@ -1,6 +1,7 @@
 import time
+import numpy as np
 import sympy as sp
-class LUDecomposition:
+class LUDecomposition2:
     def __init__(self, A, B, steps=False, significant_digits=6):
         self.A = sp.Matrix(A)
         self.B = sp.Matrix(B)
@@ -38,6 +39,7 @@ class LUDecomposition:
             if self.steps:
                 print(f"Step {i+1}: Y[{i+1}] = ({B[i]} - ({sum_ly})) / {L[i, i]} = {Y[i]}")
                 self.ans_str += f"Step {i+1}: Y[{i+1}] = ({B[i]} - ({sum_ly})) / {L[i, i]} = {Y[i]}\n"
+                self.ans += np.array2string(augmented_matrix_np, separator=', ')
 
         print(f"Y Vector: {Y}\n")
         self.ans_str += f"Y Vector: {Y}\n"
@@ -116,7 +118,7 @@ if __name__ == "__main__":
     steps = steps_choice == 'y'
 
     # Create an instance of the LUDecomposition class
-    solver = LUDecomposition(A, B, steps=steps, significant_digits=precision)
+    solver = LUDecomposition2(A, B, steps=steps, significant_digits=precision)
 
     # Solve the system
     X = solver.solve()

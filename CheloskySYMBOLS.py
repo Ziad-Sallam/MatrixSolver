@@ -1,7 +1,7 @@
 import sympy as sp
 import time  # Import time module for measuring execution time
 
-class Cholesky_Decomposition:
+class Cholesky_Decomposition2:
     def __init__(self, A, B, precision=6, steps=False):
         self.A = sp.Matrix(A)  # Use sympy.Matrix for symbolic matrix
         self.B = sp.Matrix(B)  # Use sympy.Matrix for symbolic vector
@@ -133,7 +133,7 @@ A = [
 B = [x, y, z]
 
 # Create solver instance
-solver = Cholesky_Decomposition(A, B, precision=6, steps=True)
+solver = Cholesky_Decomposition2(A, B, precision=6, steps=True)
 X = solver.solve()
 
 print("\nFinal Solution (symbolically):")
