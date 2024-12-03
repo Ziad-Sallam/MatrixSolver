@@ -1,7 +1,7 @@
 import math
 import time as tm
 import subprocess
-from gui import Ui_Form
+from gui1 import Ui_Form
 from PyQt6 import QtCore, QtGui, QtWidgets
 from gaussSeidel import GaussSeidelSolver
 from Jacobi1 import JacobiSolver
@@ -11,6 +11,10 @@ from gaussJodonFinal import GaussJordanElimination
 from LUDecomposition import LUDecomposition
 from crout import LU_Decomposition as CroutDecomposition
 from Chelosky import Cholesky_Decomposition
+from gaussSymbols import GaussianElimination2
+from sympy import Matrix
+import sympy as sp
+
 
 def handleMethodChange():
 
@@ -48,25 +52,39 @@ def handleMethodChange():
 
 def handleSizeChange():
     print(ui.Size.value())
-    print(ui.doubleSpinBox.value())
+    print(ui.significantFig.value())
     try:
         for i in range(len(ui.matrixBox)):
             ui.initialsList[i][0].hide()
             ui.initialsList[i][1].hide()
             for j in range(len(ui.matrixBox)+1):
                 ui.matrixBox[i][j].hide()
+                ui.charBox[i][j].hide()
 
         for i in range(ui.Size.value()):
             ui.initialsList[i][0].show()
             ui.initialsList[i][1].show()
             for j in range(ui.Size.value()+1):
                 ui.matrixBox[i][j].show()
+                ui.charBox[i][j].show()
+
     except Exception as e:
         pass
 
 
+def handleInputChange():
+    if ui.inputBox.currentText() == "Numeric":
+        ui.charWidget.hide()
+        ui.matrixWidget.show()
+        ui.initials.show()
+    elif ui.inputBox.currentText() == "Characters":
+        ui.charWidget.show()
+        ui.initials.hide()
+        ui.matrixWidget.hide()
+
+
 def segnificantFiguresChange():
-    x = ui.doubleSpinBox.value()
+    x = ui.significantFig.value()
 
     for i in range(16):
         ui.initialsList[i][1].setDecimals(x)
@@ -76,7 +94,35 @@ def segnificantFiguresChange():
             ui.matrixBox[i][j].setDecimals(x)
 
 
+def evaluateChar():
+    ans.hide()
+    size = ui.Size.value()
+    A = []
+    b = []
+    ex_time = 0
+    iterations = None
+    steps = ""
+    for i in range(size):
+        row = []
+        for j in range(size):
+            row.append(ui.charBox[i][j].text())
+        A.append(row)
+        b.append(ui.charBox[i][size].text())
+    print("hereeeeeee")
+    if ui.methodBox.currentText() == "Gauss Elimination":
+        solver = GaussianElimination2(A,b)
+        solver.show_steps = True
+        solver.solve()
+        createTextFile(str(solver.ans))
+    handleDetailedSol()
+
+
+
 def evaluate():
+    if ui.inputBox.currentText() == "Characters":
+        evaluateChar()
+        return
+
     ans.hide()
     method = ui.methodBox.currentText()
     size = ui.Size.value()
@@ -102,7 +148,7 @@ def evaluate():
         print(initials)
         if method == "Gauss seidel":
             print(initials)
-            solver = GaussSeidelSolver(A, b, max_iter=iterations, tol=maxError,precision=ui.doubleSpinBox.value())
+            solver = GaussSeidelSolver(A, b, max_iter=iterations, tol=maxError,precision=ui.significantFig.value())
             solution, iteration, time = solver.gauss_seidel_iteration(single_step=True)
             finals = solution
             print(iterations)
@@ -111,7 +157,7 @@ def evaluate():
             iterations = iteration
             steps = solver.ans_str
         elif method == "Jacobi Method":
-            solver = JacobiSolver(A, b, max_iter=iterations,tol=maxError,precision=ui.doubleSpinBox.value())
+            solver = JacobiSolver(A, b, max_iter=iterations,tol=maxError,precision=ui.significantFig.value())
             solution, iteration, time = solver.jacobi_iteration(single_step=True)
             print(solution)
             finals = solution
@@ -125,7 +171,7 @@ def evaluate():
         if ui.comboBox.currentText() == "Scaling":
             scale = True
         print(scale)
-        solver = GaussianElimination(A, b, scaling=scale, steps=True, significant_digits=ui.doubleSpinBox.value())
+        solver = GaussianElimination(A, b, scaling=scale, steps=True, significant_digits=ui.significantFig.value())
         if not solver.solve():
             ex_time = ""
             finals = []
@@ -148,7 +194,7 @@ def evaluate():
             scale = True
         print(scale)
 
-        solver = GaussJordanElimination(A, b, scaling=scale, steps=True, significant_digits=ui.doubleSpinBox.value())
+        solver = GaussJordanElimination(A, b, scaling=scale, steps=True, significant_digits=ui.significantFig.value())
         st = tm.time()
         if not solver.solve():
             ex_time = ""
@@ -167,7 +213,7 @@ def evaluate():
             steps = solver.ans_str
     elif method == "LU Decompisition":
         if ui.formatBox.currentText() == "Doolittle form":
-            solver = LUDecomposition(A, b, significant_digits=ui.doubleSpinBox.value(), steps=True)
+            solver = LUDecomposition(A, b, significant_digits=ui.significantFig.value(), steps=True)
             st = tm.time()
             finals = solver.solve().tolist()
             ex_time = tm.time() - st
@@ -176,18 +222,18 @@ def evaluate():
                 setAnsWindowError("the matrix is singular")
 
         elif ui.formatBox.currentText() == "Crout form":
-            solver = CroutDecomposition(A, b, precision=ui.doubleSpinBox.value(), steps=True)
+            solver = CroutDecomposition(A, b, precision=ui.significantFig.value(), steps=True)
             st = tm.time()
             finals = solver.solve()
             for i in range(len(finals)):
-                finals[i] = round(finals[i], ui.doubleSpinBox.value())
+                finals[i] = round(finals[i], ui.significantFig.value())
             ex_time = tm.time() - st
             steps = solver.ans_str
             print(finals)
 
         elif ui.formatBox.currentText() == "Cholesky form":
             try:
-                solver = Cholesky_Decomposition(A, b, precision=ui.doubleSpinBox.value(), steps=True)
+                solver = Cholesky_Decomposition(A, b, precision=ui.significantFig.value(), steps=True)
                 st = tm.time()
                 finals = solver.solve().tolist()
                 ex_time = tm.time() - st
@@ -198,7 +244,7 @@ def evaluate():
                 return
 
     for i in range(len(finals)):
-        finals[i] = round(finals[i], ui.doubleSpinBox.value())
+        finals[i] = round(finals[i], ui.significantFig.value())
     createTextFile(steps)
     setAnsWindow(finals, ex_time, iterations)
     ans.show()
@@ -229,8 +275,6 @@ def setAnsWindowError(msg):
 
 
 
-
-
 def createTextFile(str):
     file = open("ans.txt", "w")
     file.write(str)
@@ -238,24 +282,37 @@ def createTextFile(str):
 
 
 if __name__ == "__main__":
+    from sympy import Matrix
+
+    # Example augmented matrix
+    augmented_matrix = Matrix([['1', 2, 3], [4, 5, 6], [7, 8, 9]])
+
+    # Pretty-print to a string
+    pretty_string = sp.pretty(Matrix(augmented_matrix))
+    print(pretty_string)
+
+
+
     import sys
     app = QtWidgets.QApplication(sys.argv)
     Form = QtWidgets.QWidget()
     ui = Ui_Form()
     ui.setupUi(Form)
     ui.error.setDecimals(7)
-    ui.doubleSpinBox.setValue(6)
+    ui.significantFig.setValue(6)
     handleMethodChange()
     handleSizeChange()
     segnificantFiguresChange()
     ui.methodBox.currentIndexChanged.connect(handleMethodChange)
     ui.Size.valueChanged.connect(handleSizeChange)
     ui.Sbmit.clicked.connect(evaluate)
-    ui.doubleSpinBox.valueChanged.connect(segnificantFiguresChange)
+    ui.significantFig.valueChanged.connect(segnificantFiguresChange)
     ans = QtWidgets.QWidget()
+    ui.charWidget.hide()
     ui1 = Ui_ans()
     ui1.setupUi(ans)
     ui1.solutionButton.clicked.connect(handleDetailedSol)
+    ui.inputBox.currentIndexChanged.connect(handleInputChange)
 
     Form.show()
     sys.exit(app.exec())

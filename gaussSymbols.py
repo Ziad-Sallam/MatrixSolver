@@ -1,11 +1,13 @@
 import sympy as sp
+from sympy import Matrix
 import time
 
 class GaussianElimination2:
     def __init__(self, coeff_matrix, const_matrix):
         self.coeff_matrix = sp.Matrix(coeff_matrix)
         self.const_matrix = sp.Matrix(const_matrix)
-        self.show_steps = False
+        self.show_steps = True
+        self.ans = ''
         
     def validate_input(self):
         # Validate that both matrices have the correct dimensions
@@ -20,14 +22,18 @@ class GaussianElimination2:
         n = self.coeff_matrix.shape[0]
         if self.show_steps:
             print("Initial Augmented Matrix:")
+            self.ans += "Initial Augmented Matrix:\n"
             augmented_matrix = self.coeff_matrix.row_join(self.const_matrix)
-            sp.pprint(augmented_matrix)
+            sp.pprint(Matrix(augmented_matrix))
+            # self.ans += sp.pretty(Matrix(augmented_matrix))
             print("-" * 70)
+            self.ans += "-" * 70
          
         for i in range(n):
             for j in range(i + 1, n):
                 if self.coeff_matrix[i, i] == sp.sympify(0):
-                    print("Error: Pivot is zero") 
+                    print("Error: Pivot is zero")
+                    self.ans += "Error: Pivot is zero\n"
                     return False, None
                 factor = self.coeff_matrix[j, i] / self.coeff_matrix[i, i]
                 if self.coeff_matrix[j, i] == sp.sympify(0):  # Use sympify to compare with zero
@@ -41,8 +47,12 @@ class GaussianElimination2:
                 if self.show_steps:
                     augmented_matrix = self.coeff_matrix.row_join(self.const_matrix)
                     print(f"R{j+1} <- R{j + 1} - ({factor} * R{i + 1})\n")
+                    self.ans+= f"\nR{j+1} <- R{j + 1} - ({factor} * R{i + 1})\n"
                     sp.pprint(augmented_matrix)
+                    # self.ans += sp.pretty(Matrix(augmented_matrix))
                     print("-" * 70)
+
+                    self.ans += "-" * 70 +'\n\n'
                     print()
                 
         for i in range(n):
@@ -54,9 +64,11 @@ class GaussianElimination2:
             if flag:  
                 if self.const_matrix[i] != sp.sympify(0): 
                     print("The system has no solution.")
+                    self.ans += "The system has no solution.\n"
                     return False, None
                 else:
                     print("The system has infinite solutions.")
+                    self.ans += "The system has infinite solutions.\n"
                     return False, None 
                    
         return True, self.coeff_matrix.row_join(self.const_matrix)        
@@ -73,22 +85,25 @@ class GaussianElimination2:
             
     def solve(self):
         if self.validate_input():
-            user_choice = input("Do you want to display the steps? (y/n): ").strip().lower()
-            self.show_steps = user_choice == 'y'
-            
+
             start_time = time.time()
             valid, augmented_matrix = self.forward_elimination()
             if valid:
                 self.back_substitution(augmented_matrix)
                 print("Final Solutions:")
+                self.ans += "Final Solutions:\n"
                 for idx, sol in enumerate(self.solutions):
                     print(f"x[{idx}] = {sol}")
-                print("-" * 70) 
+                    self.ans += f"x[{idx}] = {sol}\n"
+                print("-" * 70)
+                self.ans += "-" * 70
                 end_time = time.time()
                 execution_time = end_time - start_time
-                print(f"Execution Time: {execution_time:.6f} seconds") 
+                print(f"Execution Time: {execution_time:.6f} seconds")
+                self.ans += f"Execution Time: {execution_time:.6f} seconds"
         else:
-            print("Invalid input")    
+            print("Invalid input")
+            self.ans += "Invalid input"
 
 if __name__ == "__main__":
     # Example input for coefficients and constants

@@ -5,7 +5,7 @@ class GaussJordanElimination:
     def __init__(self, coeff_matrix, const_matrix):
         self.coeff_matrix = sp.Matrix(coeff_matrix)
         self.const_matrix = sp.Matrix(const_matrix)
-        self.show_steps = False  # Default to not showing steps
+        self.show_steps = False  # Default to not showing steps8
 
     def validate_input(self):
         if self.coeff_matrix.shape[1] != self.coeff_matrix.shape[0]:
