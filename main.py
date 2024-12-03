@@ -183,6 +183,7 @@ def evaluate():
         if method == "Gauss seidel":
             print(initials)
             solver = GaussSeidelSolver(A, b, max_iter=iterations, tol=maxError,precision=ui.significantFig.value())
+            solver.initial_guess = initials
             solution, iteration, time = solver.gauss_seidel_iteration(single_step=True)
             finals = solution
             print(iterations)
@@ -194,6 +195,7 @@ def evaluate():
 
         elif method == "Jacobi Method":
             solver = JacobiSolver(A, b, max_iter=iterations,tol=maxError,precision=ui.significantFig.value())
+            solver.initial_guess = initials
             solution, iteration, time = solver.jacobi_iteration(single_step=True)
             print(solution)
             finals = solution
