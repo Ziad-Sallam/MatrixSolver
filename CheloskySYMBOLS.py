@@ -14,6 +14,7 @@ class Cholesky_Decomposition:
         """Check if the matrix is symmetric."""
         if not self.A.is_symmetric():
             print("Not symmetric")
+            self.ans_str = "Not symmetric"
             return False
         return True
 
@@ -47,10 +48,12 @@ class Cholesky_Decomposition:
                 
                 if self.steps:
                     print(f"L[{i+1},{j+1}] = {self.L[i, j]}")
+                    self.ans_str+=f"L[{i+1},{j+1}] = {self.L[i, j]}\n"
             
             if self.steps:
                 self.display_matrix(self.L)
                 print(f"After Step {i+1}:\n")
+                self.ans_str+=f"After Step {i+1}:\n"
         
         return self.L
 
@@ -121,21 +124,21 @@ class Cholesky_Decomposition:
         return X
 
 
-# Example input using symbolic variables
-a, b, c, x, y, z = sp.symbols('a b c x y z')
-
-A = [
-    [a, 0, x],
-    [0, b, 0],
-    [0, 0, c]
-]
-
-B = [x, y, z]
-
-# Create solver instance
-solver = Cholesky_Decomposition(A, B, precision=6, steps=True)
-X = solver.solve()
-
-print("\nFinal Solution (symbolically):")
-for i, val in enumerate(X):
-    print(f"x{i+1} = {val}")
+# # Example input using symbolic variables
+# a, b, c, x, y, z = sp.symbols('a b c x y z')
+#
+# A = [
+#     [a, 0, x],
+#     [0, b, 0],
+#     [0, 0, c]
+# ]
+#
+# B = [x, y, z]
+#
+# # Create solver instance
+# solver = Cholesky_Decomposition(A, B, precision=6, steps=True)
+# X = solver.solve()
+#
+# print("\nFinal Solution (symbolically):")
+# for i, val in enumerate(X):
+#     print(f"x{i+1} = {val}")

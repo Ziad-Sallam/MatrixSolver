@@ -20,6 +20,7 @@ class LU_Decomposition_Symbolic:
                 self.L[i, j] = self.A[i, j] - sum_LU
                 if self.steps:
                     print(f"L[{i+1},{j+1}] = {self.L[i, j]}")
+                    self.ans_str += f"L[{i+1}] = {self.L[i, j]}\n"
 
             # Calculate U[i, j] elements
             for j in range(i, self.n):
@@ -28,6 +29,7 @@ class LU_Decomposition_Symbolic:
                     self.U[i, j] = (self.A[i, j] - sum_LU) / self.L[i, i]
                     if self.steps:
                         print(f"U[{i+1},{j+1}] = {self.U[i, j]}")
+                        self.ans_str += f"U[{i+1}] = {self.U[i, j]}\n"
 
             # Display matrices at each step if needed
             if self.steps:
@@ -44,6 +46,7 @@ class LU_Decomposition_Symbolic:
             Y[i] = (B[i] - sum_ly) / L[i, i]
             if self.steps:
                 print(f"Y[{i+1}] = {Y[i]}")
+                self.ans_str += f"Y[{i+1}] = {Y[i]}\n"
 
         return Y
 
@@ -56,15 +59,21 @@ class LU_Decomposition_Symbolic:
             X[i] = (Y[i] - sum_ux) / U[i, i]
             if self.steps:
                 print(f"X[{i+1}] = {X[i]}")
+                self.ans_str += f"X[{i+1}] = {X[i]}\n"
 
         return X
 
     def display_matrices(self):
         """Display the current state of L and U matrices."""
         print("L Matrix:")
+        self.ans_str += "L Matrix:\n"
         sp.pprint(self.L)
+        #self.ans_str += str(sp.pretty(self.L))
         print("\nU Matrix:")
+        self.ans_str += "U Matrix:\n"
         sp.pprint(self.U)
+        #self.ans_str += str(sp.pretty(self.U))
+
         print("-" * 50)
 
     def solve(self):
@@ -82,6 +91,7 @@ class LU_Decomposition_Symbolic:
 
         # End timing and print execution time
         print(f"Execution Time: {time.time() - start_time:.6f} seconds")
+        self.ans_str += f"Execution Time: {time.time() - start_time:.6f} seconds\n"
         return X
 
 
@@ -106,4 +116,5 @@ if __name__ == "__main__":
     X = solver.solve()
 
     print("\nFinal Solution (Symbolic):")
-    sp.pprint(X)
+    #sp.pprint(X)
+    print(sp.pretty(X))

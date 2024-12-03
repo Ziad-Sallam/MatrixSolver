@@ -9,8 +9,9 @@ class GaussSeidelSolver:
         self.initial_guess = np.zeros(self.num_variables) if initial_guess is None else np.array(initial_guess, dtype=float)
         self.max_iter = max_iter
         self.tol = tol
+        self.relativeError = 0
+        self.ans_str = ''
         self.precision = precision if precision is not None else 6
-        self.ans_str = ""
 
     def max_error(self, x_new, x_old):
         max_err = 0
@@ -19,26 +20,23 @@ class GaussSeidelSolver:
                 max_err = max(max_err, abs((x_new[i] - x_old[i]) / x_old[i]))
             else:
                 max_err = max(max_err, abs(x_new[i] - x_old[i]))
+        self.relativeError = max_err
         return max_err
 
     def format_significant_figures(self, number):
-        # Handle the case where number is zero
         if number == 0:
-            return f"{number:.{self.precision}f}"
-        
-        # Get the number of significant figures before the decimal point
-        num_digits_before_decimal = len(str(int(abs(number))))  
+            return f"{0:.{self.precision}f}"
+    
+        # Normalize using scientific notation
+        normalized_number = f"{number:.{self.precision - 1}e}"  # Convert to scientific notation
+        base, exponent = normalized_number.split('e')  # Separate base and exponent
+        base = float(base)
+        formatted_base = f"{base:.{self.precision - 1}f}"  # Format base with precision
 
-        # Calculate how many decimal places we need
-        significant_digits_needed = self.precision - num_digits_before_decimal
+        if int(exponent) == 0:  # If exponent is 0, omit it
+            return formatted_base
+        return f"{formatted_base}e{int(exponent)}"
 
-        # If we need fewer decimal places than the precision allows
-        if significant_digits_needed < 0:
-            # Just round the number to the specified precision
-            return f"{number:.{self.precision}f}"
-
-        # Otherwise, format the number based on significant digits
-        return f"{number:.{significant_digits_needed}f}"
 
     def gauss_seidel_iteration(self, single_step=False):
         x = self.initial_guess
@@ -64,26 +62,27 @@ class GaussSeidelSolver:
                 self.ans_str += f"\n    {computation_details} = {self.format_significant_figures(x[i])}"
             
             if single_step:
-                print(f"\n    Current solution: {[self.format_significant_figures(val) for val in x]}")
+                print(f"    Current solution: {[self.format_significant_figures(val) for val in x]}")
                 self.ans_str += f"\n    Current solution: {[self.format_significant_figures(val) for val in x]}"
+
             if self.max_error(x, x_old) < self.tol:
                 break
 
         end_time = time.time()
         execution_time = end_time - start_time
-        solution = np.round(x, self.precision)
+        solution = [self.format_significant_figures(val) for val in x]
 
         return solution, k + 1, execution_time
 
 ################################################################################
 # Example usage
 if __name__ == "__main__":
-    A = [[4, -1, 0, 0],
-         [-1, 4, -1, 0],
-         [0, -1, 4, -1],
-         [0, 0, -1, 3]]
-    B = [15, 10, 10, 10]
-
+    A = [
+        [8, 3, 2],  # Coefficients of the first equation
+        [1, 5, 1],  # Coefficients of the second equation
+        [2, 9, 6]   # Coefficients of the third equation
+    ]
+    B = [13, 7, 9]  # Constants on the right-hand side
     precision_input = input("Enter the number of significant figures (default 6): ")
     precision = int(precision_input) if precision_input else None
 
@@ -102,6 +101,6 @@ if __name__ == "__main__":
     step_mode = input("Enable single-step mode? (y/n, default n): ").strip().lower() == 'y'
     solution, iterations, exec_time = solver.gauss_seidel_iteration(single_step=step_mode)
 
-    print(f"\nSolution: {[solver.format_significant_figures(val) for val in solution]}")
+    print(f"\nSolution: {solution}")
     print(f"Iterations: {iterations}")
     print(f"Execution Time: {exec_time:.6f} seconds")

@@ -9,8 +9,9 @@ class JacobiSolver:
         self.initial_guess = np.zeros(self.num_variables) if initial_guess is None else np.array(initial_guess, dtype=float)
         self.max_iter = max_iter
         self.tol = tol
+        self.ans_str = ''
+        self.relativeError = 0
         self.precision = precision if precision is not None else 6
-        self.ans_str =""
 
     def max_error(self, x_new, x_old):
         max_err = 0
@@ -19,23 +20,22 @@ class JacobiSolver:
                 max_err = max(max_err, abs((x_new[i] - x_old[i]) / x_old[i]))
             else:
                 max_err = max(max_err, abs(x_new[i] - x_old[i]))
+        self.relativeError = max_err
         return max_err
 
     def format_significant_figures(self, number):
-        # Format the number to the specified significant figures
         if number == 0:
-            return f"{number:.{self.precision}f}"
-        
-        # Determine the number of digits before the decimal point
-        num_digits_before_decimal = len(str(int(abs(number))))  
-        
-        # Calculate how many decimal places we need
-        decimal_places = self.precision - num_digits_before_decimal
-        
-        if decimal_places < 0:
-            return f"{number:.{self.precision}f}"  # For very large numbers, just round to the precision
-        
-        return f"{number:.{decimal_places}f}"
+            return f"{0:.{self.precision}f}"
+    
+        # Normalize using scientific notation
+        normalized_number = f"{number:.{self.precision - 1}e}"  # Convert to scientific notation
+        base, exponent = normalized_number.split('e')  # Separate base and exponent
+        base = float(base)
+        formatted_base = f"{base:.{self.precision - 1}f}"  # Format base with precision
+
+        if int(exponent) == 0:  # If exponent is 0, omit it
+            return formatted_base
+        return f"{formatted_base}e{int(exponent)}"
 
     def jacobi_iteration(self, single_step=False):
         x_old = self.initial_guess
@@ -54,7 +54,6 @@ class JacobiSolver:
                         term = self.A[i][j] * x_old[j]
                         sum_ += term
                         terms.append(f"{self.A[i][j]} * {self.format_significant_figures(x_old[j])}")
-
                 
                 x_new[i] = (self.b[i] - sum_) / self.A[i][i]
                 computation_details = f"x{i + 1} = ({self.b[i]} - ({' + '.join(terms)})) / {self.A[i][i]}"
@@ -62,8 +61,10 @@ class JacobiSolver:
                 self.ans_str += f"\n    {computation_details} = {self.format_significant_figures(x_new[i])}"
             
             if single_step:
-                print(f"    Current solution: {np.round(x_new, self.precision)}")
-                self.ans_str += f"\n    Current solution: {np.round(x_new, self.precision)}"
+                formatted_solution = [self.format_significant_figures(val) for val in x_new]
+                print(f"    Current solution: [{', '.join(formatted_solution)}]")
+                self.ans_str += f"\n    Current solution: [{', '.join(formatted_solution)}]"
+            
             if self.max_error(x_new, x_old) < self.tol:
                 break
 
@@ -71,19 +72,19 @@ class JacobiSolver:
 
         end_time = time.time()
         execution_time = end_time - start_time
-        solution = np.round(x_new, self.precision)
+        solution = [self.format_significant_figures(val) for val in x_new]
 
         return solution, k + 1, execution_time
 
 ################################################################################
 # Example usage
 if __name__ == "__main__":
-    A = [[4, -1, 0, 0],
-         [-1, 4, -1, 0],
-         [0, -1, 4, -1],
-         [0, 0, -1, 3]]
-    B = [15, 10, 10, 10]
-
+    A = [
+        [8, 3, 2],  # Coefficients of the first equation
+        [1, 5, 1],  # Coefficients of the second equation
+        [2, 9, 6]   # Coefficients of the third equation
+    ]
+    B = [13, 7, 9] 
     precision_input = input("Enter the number of significant figures (default 6): ")
     precision = int(precision_input) if precision_input else None
 

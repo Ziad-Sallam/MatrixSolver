@@ -4,7 +4,7 @@ import subprocess
 from gui1 import Ui_Form
 from PyQt6 import QtCore, QtGui, QtWidgets
 from gaussSeidel import GaussSeidelSolver
-from Jacobi1 import JacobiSolver
+from Jacobi import JacobiSolver
 from GaussFinal import GaussianElimination
 from answers import Ui_ans
 from gaussJodonFinal import GaussJordanElimination
@@ -14,7 +14,10 @@ from Chelosky import Cholesky_Decomposition
 from gaussSymbols import GaussianElimination2
 from sympy import Matrix
 import sympy as sp
-
+from CroutSYMBOL import LU_Decomposition_Symbolic as CroutDecomposition_Symbolic
+from DolittleSYMBOLS import LUDecomposition as DolittleDecomposition_Symbolic
+from CheloskySYMBOLS import Cholesky_Decomposition as CholeskyDecomposition_Symbolic
+from JordonSYMBOLS import GaussJordanElimination as JordanElimination_Symbolic
 
 def handleMethodChange():
 
@@ -114,11 +117,42 @@ def evaluateChar():
         solver.show_steps = True
         solver.solve()
         createTextFile(str(solver.ans))
+    elif ui.methodBox.currentText() == "LU Decompisition":
+        if ui.formatBox.currentText() == "Crout form":
+            solver = CroutDecomposition_Symbolic(A,b,True)
+            solver.solve()
+            print(A)
+            print(b)
+            print(solver.ans_str)
+            createTextFile(str(solver.ans_str))
+        elif ui.formatBox.currentText() == "Doolittle form":
+            solver = DolittleDecomposition_Symbolic(A, b, True,significant_digits=6)
+            print(solver.solve())
+            print(A)
+            print(b)
+            print(solver.ans_str)
+            createTextFile(solver.ans_str)
+        elif ui.formatBox.currentText() == "Cholesky form":
+            solver = CholeskyDecomposition_Symbolic(A, b, precision=6, steps=True)
+            try:
+                print(solver.solve())
+                print(A)
+                print(b)
+                print(solver.ans_str)
+                createTextFile(solver.ans_str)
+            except Exception as e:
+                createTextFile("Not Symmetric")
+    elif ui.methodBox.currentText() == "Gauss Jordan":
+        solver = JordanElimination_Symbolic(A, b)
+        solver.show_steps = True
+        solver.solve()
+        createTextFile(str(solver.ans))
+
     handleDetailedSol()
 
 
-
 def evaluate():
+    ui1.error.setText("None")
     if ui.inputBox.currentText() == "Characters":
         evaluateChar()
         return
@@ -153,9 +187,11 @@ def evaluate():
             finals = solution
             print(iterations)
             print(time)
+            ui1.error.setText(str(solver.relativeError))
             ex_time = time
             iterations = iteration
             steps = solver.ans_str
+
         elif method == "Jacobi Method":
             solver = JacobiSolver(A, b, max_iter=iterations,tol=maxError,precision=ui.significantFig.value())
             solution, iteration, time = solver.jacobi_iteration(single_step=True)
@@ -165,7 +201,9 @@ def evaluate():
             print(time)
             ex_time = time
             iterations = iteration
+            ui1.error.setText(str(solver.relativeError))
             steps = solver.ans_str
+
     elif method == "Gauss Elimination":
         scale = False
         if ui.comboBox.currentText() == "Scaling":
@@ -243,8 +281,12 @@ def evaluate():
                 ans.show()
                 return
 
+    print("hello")
+    print(finals)
     for i in range(len(finals)):
-        finals[i] = round(finals[i], ui.significantFig.value())
+        finals[i] = round(float(finals[i]), ui.significantFig.value())
+    print("hello again!!")
+
     createTextFile(steps)
     setAnsWindow(finals, ex_time, iterations)
     ans.show()
@@ -257,7 +299,7 @@ def handleDetailedSol():
 
 def setAnsWindow(finals, time, iterations):
     ui1.iterations.setText(str(iterations))
-    ui1.error.setText(str(ui.error.value()))
+    #ui1.error.setText(str(ui.error.value()))
     ui1.Method.setText(str(ui.methodBox.currentText()))
     ui1.size.setText(str(ui.Size.value()))
     ui1.time.setText(str(time))

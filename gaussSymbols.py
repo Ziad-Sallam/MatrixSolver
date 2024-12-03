@@ -49,7 +49,8 @@ class GaussianElimination2:
                     print(f"R{j+1} <- R{j + 1} - ({factor} * R{i + 1})\n")
                     self.ans+= f"\nR{j+1} <- R{j + 1} - ({factor} * R{i + 1})\n"
                     sp.pprint(augmented_matrix)
-                    # self.ans += sp.pretty(Matrix(augmented_matrix))
+                    # str1 = str(sp.pretty(augmented_matrix))
+                    # self.ans += str1
                     print("-" * 70)
 
                     self.ans += "-" * 70 +'\n\n'
@@ -94,7 +95,7 @@ class GaussianElimination2:
                 self.ans += "Final Solutions:\n"
                 for idx, sol in enumerate(self.solutions):
                     print(f"x[{idx}] = {sol}")
-                    self.ans += f"x[{idx}] = {sol}\n"
+                    self.ans += f"x[{idx}] = {sol}\n\n"
                 print("-" * 70)
                 self.ans += "-" * 70
                 end_time = time.time()
