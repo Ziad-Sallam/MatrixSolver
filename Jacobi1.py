@@ -1,7 +1,7 @@
 import numpy as np
 import time
 
-class JacobiSolver: 
+class JacobiSolver:
     def __init__(self, A, b, initial_guess=None, max_iter=100, tol=1e-5, precision=None):
         self.A = np.array(A, dtype=float)
         self.b = np.array(b, dtype=float)
@@ -10,7 +10,16 @@ class JacobiSolver:
         self.max_iter = max_iter
         self.tol = tol
         self.precision = precision if precision is not None else 6
-        self.ans_str =""
+        self.ans_str = ""
+        self.normalize()  # Apply normalization
+
+    def normalize(self):
+        """Normalize the rows of A and corresponding elements of b."""
+        for i in range(self.num_variables):
+            row_max = np.max(np.abs(self.A[i]))
+            if row_max != 0:
+                self.A[i] = self.A[i] / row_max
+                self.b[i] = self.b[i] / row_max
 
     def max_error(self, x_new, x_old):
         max_err = 0
@@ -22,18 +31,14 @@ class JacobiSolver:
         return max_err
 
     def format_significant_figures(self, number):
-        # Format the number to the specified significant figures
         if number == 0:
             return f"{number:.{self.precision}f}"
         
-        # Determine the number of digits before the decimal point
         num_digits_before_decimal = len(str(int(abs(number))))  
-        
-        # Calculate how many decimal places we need
         decimal_places = self.precision - num_digits_before_decimal
         
         if decimal_places < 0:
-            return f"{number:.{self.precision}f}"  # For very large numbers, just round to the precision
+            return f"{number:.{self.precision}f}"
         
         return f"{number:.{decimal_places}f}"
 
@@ -55,7 +60,6 @@ class JacobiSolver:
                         sum_ += term
                         terms.append(f"{self.A[i][j]} * {self.format_significant_figures(x_old[j])}")
 
-                
                 x_new[i] = (self.b[i] - sum_) / self.A[i][i]
                 computation_details = f"x{i + 1} = ({self.b[i]} - ({' + '.join(terms)})) / {self.A[i][i]}"
                 print(f"    {computation_details} = {self.format_significant_figures(x_new[i])}")
@@ -78,22 +82,25 @@ class JacobiSolver:
 ################################################################################
 # Example usage
 if __name__ == "__main__":
-    A = [[4, -1, 0, 0],
-         [-1, 4, -1, 0],
-         [0, -1, 4, -1],
-         [0, 0, -1, 3]]
-    B = [15, 10, 10, 10]
+    A = [
+        [2, 3, -1, 4, -1, 5, 6],
+        [1, 2, 3, -1, 4, -5, 0],
+        [3, 1, -2, 3, -4, 2, -1],
+        [4, 3, 1, 2, -3, 4, 5],
+        [1, -2, 3, 1, 2, -3, 4],
+        [2, -1, 4, 2, -1, 3, -2],
+        [3, 2, 2, -3, 4, -5, 6]
+    ]
+    B = [10, 5, 3, 8, -2, 6, -1]
 
     precision_input = input("Enter the number of significant figures (default 6): ")
     precision = int(precision_input) if precision_input else None
 
-    # Get initial guess from user
     initial_guess_input = input(f"Enter the initial guess as space-separated values (default: {' '.join(map(str, np.zeros(len(B))))}): ")
     initial_guess = np.array([float(x) for x in initial_guess_input.split()]) if initial_guess_input else np.zeros(len(B))
 
     solver = JacobiSolver(A, B, initial_guess=initial_guess, max_iter=100, tol=1e-5, precision=precision)
 
-    # Solve with optional single-step simulation
     step_mode = input("Enable single-step mode? (y/n, default n): ").strip().lower() == 'y'
     solution, iterations, exec_time = solver.jacobi_iteration(single_step=step_mode)
 

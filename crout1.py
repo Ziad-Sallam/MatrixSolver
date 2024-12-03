@@ -1,5 +1,5 @@
 import numpy as np
-import time
+import time  # Importing time module for execution time measurement
 
 class LU_Decomposition:
     def __init__(self, A, B, precision=6, steps=False):
@@ -12,10 +12,6 @@ class LU_Decomposition:
         self.steps = steps
         self.ans_str = ""
 
-    def format_significant_figures(self, value):
-        """Format a number to the given number of significant figures."""
-        return f"{value:.{self.precision}g}"
-
     def decompose(self):
         """LU decomposition (L and U matrices) using the Crout method"""
         for i in range(self.n):
@@ -27,7 +23,7 @@ class LU_Decomposition:
                 self.L[i][j] = self.A[i][j] - sum_LU
                 # Print L matrix elements at each step
                 if self.steps:
-                    print(f"L[{i+1},{j+1}] = {self.format_significant_figures(self.L[i][j])}")
+                    print(f"L[{i+1},{j+1}] = {self.L[i][j]:.{self.precision}f}")
 
             # Calculate U[i, j] elements
             for j in range(i, self.n):
@@ -38,7 +34,7 @@ class LU_Decomposition:
                     self.U[i][j] = (self.A[i][j] - sum_LU) / self.L[i][i]
                     # Print U matrix elements at each step
                     if self.steps:
-                        print(f"U[{i+1},{j+1}] = {self.format_significant_figures(self.U[i][j])}")
+                        print(f"U[{i+1},{j+1}] = {self.U[i][j]:.{self.precision}f}")
 
             # Display the matrices after each step
             if self.steps:
@@ -49,6 +45,7 @@ class LU_Decomposition:
 
     def check_for_solution(self):
         """Check if the system has no solution or infinitely many solutions."""
+        # Check for zero rows in U or L
         for i in range(self.n):
             if np.allclose(self.L[i], 0) and not np.allclose(self.B[i], 0):
                 print("No solution: Row in L is zero, but corresponding B is non-zero.")
@@ -77,8 +74,8 @@ class LU_Decomposition:
             Y[i] = (B[i] - sum_ly) / L[i][i]
 
             if self.steps:
-                print(f"Step {i+1}: Y[{i+1}] = ({B[i]} - ({sum_ly})) / {L[i][i]} = {self.format_significant_figures(Y[i])}")
-                self.ans_str += f"Step {i+1}: Y[{i+1}] = ({B[i]} - ({sum_ly})) / {L[i][i]} = {self.format_significant_figures(Y[i])}\n"
+                print(f"Step {i+1}: Y[{i+1}] = ({B[i]:.{self.precision}f} - ({sum_ly:.{self.precision}f})) / {L[i][i]:.{self.precision}f} = {Y[i]:.{self.precision}f}")
+                self.ans_str += f"Step {i+1}: Y[{i+1}] = ({B[i]:.{self.precision}f} - ({sum_ly:.{self.precision}f})) / {L[i][i]:.{self.precision}f} = {Y[i]:.{self.precision}f}\n"
 
         print(f"Y Vector: {Y}\n")
         self.ans_str += f"Y Vector: {Y}\n"
@@ -99,8 +96,8 @@ class LU_Decomposition:
             X[i] = (Y[i] - sum_ux) / U[i][i]
 
             if self.steps:
-                print(f"Step {n-i}: X[{i+1}] = ({Y[i]} - ({sum_ux})) / {U[i][i]} = {self.format_significant_figures(X[i])}")
-                self.ans_str += f"Step {n-i}: X[{i+1}] = ({Y[i]} - ({sum_ux})) / {U[i][i]} = {self.format_significant_figures(X[i])}\n"
+                print(f"Step {n-i}: X[{i+1}] = ({Y[i]:.{self.precision}f} - ({sum_ux:.{self.precision}f})) / {U[i][i]:.{self.precision}f} = {X[i]:.{self.precision}f}")
+                self.ans_str += f"Step {n-i}: X[{i+1}] = ({Y[i]:.{self.precision}f} - ({sum_ux:.{self.precision}f})) / {U[i][i]:.{self.precision}f} = {X[i]:.{self.precision}f}\n"
 
         print(f"Solution Vector X: {X}\n")
         self.ans_str += f"Solution Vector X: {X}\n"
@@ -109,12 +106,18 @@ class LU_Decomposition:
     def display_matrices(self, L, U):
         """Display the current state of L and U matrices."""
         print("L Matrix:")
+        self.ans_str += "\nL Matrix:\n"
         for row in L:
-            print(" ".join([self.format_significant_figures(val) for val in row]))
+            print(" ".join([f"{val:.{self.precision}f}" for val in row]))
+            self.ans_str += f'\n{" ".join([f"{val:.{self.precision}f}" for val in row])}'
         print("\nU Matrix:")
+        self.ans_str += "\nU Matrix:\n"
         for row in U:
-            print(" ".join([self.format_significant_figures(val) for val in row]))
+            print(" ".join([f"{val:.{self.precision}f}" for val in row]))
+            self.ans_str+= f'\n{" ".join([f"{val:.{self.precision}f}" for val in row])}'
+        self.ans_str += "\n"
         print("-" * 50)
+        self.ans_str += "-" * 50
 
     def solve(self):
         """Solve the system of equations using LU Decomposition."""
@@ -140,12 +143,6 @@ class LU_Decomposition:
 
         # End timing and print execution time
         print(f"Execution Time: {time.time() - start_time:.6f} seconds")
-        
-        # Format the final solution vector using significant figures
-        print("\nFinal Solution:")
-        for i, val in enumerate(X):
-            print(f"x{i+1} = {self.format_significant_figures(val)}")
-
         return X
 
 
@@ -153,11 +150,11 @@ class LU_Decomposition:
 if __name__ == "__main__":
     # Example input
     A = [
-        [5, 7, 8],
-        [3, 8, 0.8],
-        [0, 0, 0]
+        [0, 5, 1],
+        [0, 12, 1],
+        [0, 8, 1]
     ]
-    B = [8, 6, 7]
+    B = [10, 20, 30]
 
     # User input for precision and steps
     precision_input = input("Enter the number of significant figures (default 6): ")
@@ -174,5 +171,9 @@ if __name__ == "__main__":
 
     if X is None:
         print("The system has no solution.")
-    elif isinstance(X, str) and X == "Infinite solutions":
+    elif X == "Infinite solutions":
         print("The system has infinitely many solutions.")
+    else:
+        print("\nFinal Solution:")
+        for i, val in enumerate(X):
+            print(f"x{i+1} = {val:.{precision}f}")

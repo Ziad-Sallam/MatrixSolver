@@ -2,7 +2,7 @@ import numpy as np
 import time
 
 class GaussSeidelSolver:
-    def __init__(self, A, b, initial_guess=None, max_iter=100, tol=1e-5, precision=None, scaling=False):
+    def __init__(self, A, b, initial_guess=None, max_iter=100, tol=1e-5, precision=None):
         self.A = np.array(A, dtype=float)
         self.b = np.array(b, dtype=float)
         self.num_variables = len(b)
@@ -10,16 +10,7 @@ class GaussSeidelSolver:
         self.max_iter = max_iter
         self.tol = tol
         self.precision = precision if precision is not None else 6
-        self.scaling = scaling
-        self.ans_str =""
-        if self.scaling:
-            self.apply_scaling()
-
-    def apply_scaling(self):
-        for i in range(self.num_variables):
-            max_coeff = max(abs(self.A[i]))
-            self.A[i] /= max_coeff
-            self.b[i] /= max_coeff
+        self.ans_str = ""
 
     def max_error(self, x_new, x_old):
         max_err = 0
@@ -30,6 +21,25 @@ class GaussSeidelSolver:
                 max_err = max(max_err, abs(x_new[i] - x_old[i]))
         return max_err
 
+    def format_significant_figures(self, number):
+        # Handle the case where number is zero
+        if number == 0:
+            return f"{number:.{self.precision}f}"
+        
+        # Get the number of significant figures before the decimal point
+        num_digits_before_decimal = len(str(int(abs(number))))  
+
+        # Calculate how many decimal places we need
+        significant_digits_needed = self.precision - num_digits_before_decimal
+
+        # If we need fewer decimal places than the precision allows
+        if significant_digits_needed < 0:
+            # Just round the number to the specified precision
+            return f"{number:.{self.precision}f}"
+
+        # Otherwise, format the number based on significant digits
+        return f"{number:.{significant_digits_needed}f}"
+
     def gauss_seidel_iteration(self, single_step=False):
         x = self.initial_guess
         start_time = time.time()
@@ -37,7 +47,7 @@ class GaussSeidelSolver:
         for k in range(self.max_iter):
             x_old = np.copy(x)
             print(f"\nIteration {k + 1}:")
-            self.ans_str += f"\nIteration {k + 1}: "
+            self.ans_str += f"\nIteration {k + 1}:"
 
             for i in range(self.num_variables):
                 sum_ = 0
@@ -46,16 +56,16 @@ class GaussSeidelSolver:
                     if j != i:
                         term = self.A[i][j] * x[j]
                         sum_ += term
-                        terms.append(f"{self.A[i][j]} * {x[j]:.{self.precision}f}")
+                        terms.append(f"{self.A[i][j]} * {self.format_significant_figures(x[j])}")
                 
                 x[i] = (self.b[i] - sum_) / self.A[i][i]
                 computation_details = f"x{i + 1} = ({self.b[i]} - ({' + '.join(terms)})) / {self.A[i][i]}"
-                print(f"    {computation_details} = {x[i]:.{self.precision}f}")
-                self.ans_str += f"\n    {computation_details} = {x[i]:.{self.precision}f}"
+                print(f"    {computation_details} = {self.format_significant_figures(x[i])}")
+                self.ans_str += f"\n    {computation_details} = {self.format_significant_figures(x[i])}"
             
             if single_step:
-                print(f"    Current solution: {np.round(x, self.precision)}")
-                self.ans_str += f"\n    Current solution: {np.round(x, self.precision)}\n"
+                print(f"\n    Current solution: {[self.format_significant_figures(val) for val in x]}")
+                self.ans_str += f"\n    Current solution: {[self.format_significant_figures(val) for val in x]}"
             if self.max_error(x, x_old) < self.tol:
                 break
 
@@ -77,15 +87,21 @@ if __name__ == "__main__":
     precision_input = input("Enter the number of significant figures (default 6): ")
     precision = int(precision_input) if precision_input else None
 
-    scaling_choice = input("Apply scaling? (y/n, default n): ").strip().lower()
-    scaling = scaling_choice == 'y'
+    # Prompt user to enter initial guess with default shown
+    default_initial_guess = " ".join(["0.0"] * len(A[0]))  # Default: 0.0 0.0 0.0 0.0
+    initial_guess_input = input(f"Enter the initial guess as space-separated values (default: {default_initial_guess}): ")
+    
+    if initial_guess_input:
+        initial_guess = list(map(float, initial_guess_input.split()))
+    else:
+        initial_guess = None  # Default to zero if input is empty
 
-    solver = GaussSeidelSolver(A, B, max_iter=100, tol=1e-5, precision=precision, scaling=scaling)
+    solver = GaussSeidelSolver(A, B, initial_guess=initial_guess, max_iter=100, tol=1e-5, precision=precision)
 
     # Solve with optional single-step simulation
     step_mode = input("Enable single-step mode? (y/n, default n): ").strip().lower() == 'y'
     solution, iterations, exec_time = solver.gauss_seidel_iteration(single_step=step_mode)
 
-    print(f"\nSolution: {solution}")
+    print(f"\nSolution: {[solver.format_significant_figures(val) for val in solution]}")
     print(f"Iterations: {iterations}")
     print(f"Execution Time: {exec_time:.6f} seconds")

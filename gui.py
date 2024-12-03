@@ -7,6 +7,7 @@
 
 
 from PyQt6 import QtCore, QtGui, QtWidgets
+from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QAbstractSpinBox
 
 
@@ -107,15 +108,31 @@ class Ui_Form(object):
         self.errorLabel.setFont(font)
         self.errorLabel.setObjectName("errorLabel")
         self.configGrid.addWidget(self.errorLabel, 2, 2, 1, 1)
-        self.doubleSpinBox = QtWidgets.QSpinBox(parent=self.gridLayoutWidget)
-        self.doubleSpinBox.setObjectName("SpinBox")
-        self.configGrid.addWidget(self.doubleSpinBox, 0, 3, 1, 1)
+        self.significantFig = QtWidgets.QSpinBox(parent=self.gridLayoutWidget)
+        self.significantFig.setObjectName("SpinBox")
+        self.configGrid.addWidget(self.significantFig, 0, 3, 1, 1)
         self.Sbmit = QtWidgets.QPushButton(parent=self.gridLayoutWidget)
         self.Sbmit.setObjectName("Sbmit")
         self.configGrid.addWidget(self.Sbmit, 0, 4, 1, 1)
         self.widget = QtWidgets.QWidget(parent=Form)
         self.widget.setGeometry(QtCore.QRect(70, 270, 761, 531))
         self.widget.setObjectName("widget")
+        self.numberOfIterationsLabel_2 = QtWidgets.QLabel(parent=self.gridLayoutWidget)
+        font = QtGui.QFont()
+        font.setFamily("MV Boli")
+        font.setPointSize(12)
+        self.numberOfIterationsLabel_2.setFont(font)
+        self.numberOfIterationsLabel_2.setLayoutDirection(QtCore.Qt.LayoutDirection.RightToLeft)
+        self.numberOfIterationsLabel_2.setObjectName("numberOfIterationsLabel_2")
+        self.configGrid.addWidget(self.numberOfIterationsLabel_2, 3, 0, 1, 1)
+        self.comboBox = QtWidgets.QComboBox(parent=self.gridLayoutWidget)
+        self.comboBox.setObjectName("comboBox")
+        self.comboBox.addItem("")
+        self.comboBox.addItem("")
+        self.configGrid.addWidget(self.comboBox, 3, 1, 1, 1)
+        self.comboBox.setItemText(0, "Partial Pivoting")
+        self.comboBox.setItemText(1,  "Scaling")
+        self.numberOfIterationsLabel_2.setText("Scaling/Pivoting")
 
 
         self.matrixScroll = QtWidgets.QScrollArea(Form)
@@ -138,6 +155,20 @@ class Ui_Form(object):
               input.setFixedWidth(70)
               row.append(input)
             self.matrixBox.append(row)
+
+
+        # self.charWidget = QtWidgets.QWidget(self.matrixScroll)
+        # self.charBox = []
+        # for i in range(16):
+        #     row = []
+        #     for j in range(17):
+        #       input = QtWidgets.QLineEdit(self.charWidget)
+        #       input.setMaxLength(1)
+        #
+        #       input.move(70 * (j % 21), i * 34)
+        #       input.setFixedWidth(50)
+        #       row.append(input)
+        #     self.charBox.append(row)
 
 
         self.matrixScroll.setWidget(self.matrixWidget)
@@ -190,5 +221,6 @@ if __name__ == "__main__":
     Form = QtWidgets.QWidget()
     ui = Ui_Form()
     ui.setupUi(Form)
+
     Form.show()
     sys.exit(app.exec())
