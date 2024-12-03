@@ -153,6 +153,7 @@ def evaluateChar():
 
 def evaluate():
     ui1.error.setText("None")
+    ui1.LU.setText("None")
     if ui.inputBox.currentText() == "Characters":
         evaluateChar()
         return
@@ -253,6 +254,7 @@ def evaluate():
             steps = solver.ans_str
     elif method == "LU Decompisition":
         if ui.formatBox.currentText() == "Doolittle form":
+            ui1.LU.setText("Doolittle form")
             solver = LUDecomposition(A, b, significant_digits=ui.significantFig.value(), steps=True)
             st = tm.time()
             finals = solver.solve().tolist()
@@ -262,6 +264,7 @@ def evaluate():
                 setAnsWindowError("the matrix is singular")
 
         elif ui.formatBox.currentText() == "Crout form":
+            ui1.LU.setText("Crout form")
             solver = CroutDecomposition(A, b, precision=ui.significantFig.value(), steps=True)
             st = tm.time()
             finals = solver.solve()
@@ -272,6 +275,7 @@ def evaluate():
             print(finals)
 
         elif ui.formatBox.currentText() == "Cholesky form":
+            ui1.LU.setText("Cholesky form")
             try:
                 solver = Cholesky_Decomposition(A, b, precision=ui.significantFig.value(), steps=True)
                 st = tm.time()
