@@ -193,7 +193,6 @@ def evaluate():
         if ui.comboBox.currentText() == "Scaling":
             scale = True
         print(scale)
-
         solver = GaussJordanElimination(A, b, scaling=scale, steps=True, significant_digits=ui.significantFig.value())
         st = tm.time()
         if not solver.solve():
@@ -207,10 +206,10 @@ def evaluate():
                 setAnsWindowError("The system has infinite solutions")
                 return
         else:
-            ex_time = tm.time() - st
             print(solver.finals)
             finals = solver.finals
             steps = solver.ans_str
+            ex_time = tm.time() - st
     elif method == "LU Decompisition":
         if ui.formatBox.currentText() == "Doolittle form":
             solver = LUDecomposition(A, b, significant_digits=ui.significantFig.value(), steps=True)
