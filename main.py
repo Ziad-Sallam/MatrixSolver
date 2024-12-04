@@ -17,7 +17,7 @@ import sympy as sp
 from CroutSYMBOL import LU_Decomposition_Symbolic as CroutDecomposition_Symbolic
 from DolittleSYMBOLS import LUDecomposition as DolittleDecomposition_Symbolic
 from CheloskySYMBOLS import Cholesky_Decomposition as CholeskyDecomposition_Symbolic
-from JordonSYMBOLS import GaussJordanElimination as JordanElimination_Symbolic
+from JordonSYMBOLS import GaussJordanElimination2 as JordanElimination_Symbolic
 
 def handleMethodChange():
 

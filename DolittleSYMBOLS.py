@@ -1,5 +1,6 @@
 import time
 import sympy as sp
+
 class LUDecomposition:
     def __init__(self, A, B, steps=False, significant_digits=6):
         self.A = sp.Matrix(A)
@@ -67,8 +68,14 @@ class LUDecomposition:
         """Display the current state of L and U matrices."""
         print("L Matrix:")
         print(L)
+        self.ans_str += "L Matrix:\n"
+        self.ans_str += f"{L.tolist()}\n"
+
         print("\nU Matrix:")
         print(U)
+        self.ans_str += "U Matrix:\n"
+        self.ans_str += f"{U.tolist()}\n"
+
         print("-" * 50)
 
     def solve(self):

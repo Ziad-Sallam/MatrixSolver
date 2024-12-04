@@ -1,11 +1,12 @@
 import sympy as sp
 import time
+import numpy as np
 
-class GaussJordanElimination:
+class GaussJordanElimination2:
     def __init__(self, coeff_matrix, const_matrix):
         self.coeff_matrix = sp.Matrix(coeff_matrix)
         self.const_matrix = sp.Matrix(const_matrix)
-        self.show_steps = False  # Default to not showing steps8
+        self.show_steps = False  # Default to not showing steps
         self.ans = ''
 
     def validate_input(self):
@@ -19,16 +20,18 @@ class GaussJordanElimination:
         n = self.coeff_matrix.shape[0]
         augmented_matrix = self.coeff_matrix.row_join(self.const_matrix)
         
+        # Convert augmented matrix to numpy array
+        augmented_matrix_np = np.array(augmented_matrix, dtype=object)
+
         if self.show_steps:
-            print("Initial Augmented Matrix:")
-            sp.pprint(augmented_matrix)
-            print("-" * 70)
+            self.ans += "Initial Augmented Matrix:\n"
+            self.ans += np.array2string(augmented_matrix_np, separator=', ') + "\n"
+            self.ans += "-" * 70 + "\n"
 
         # Forward elimination to get to row echelon form
         for i in range(n):
             for j in range(i + 1, n):
                 if augmented_matrix[i, i] == sp.sympify(0):
-                    print("Error: Pivot is zero.")
                     self.ans += "Error: Pivot is zero.\n"
                     return False, None
                 factor = augmented_matrix[j, i] / augmented_matrix[i, i]
@@ -36,35 +39,19 @@ class GaussJordanElimination:
                     continue
                 augmented_matrix[j, :] -= factor * augmented_matrix[i, :]
                 if self.show_steps:
-                    print(f"R{j+1} <- R{j + 1} - ({factor} * R{i + 1})\n")
-                    self.ans += f"R{j+1} - ({factor} * R{i + 1})\n"
-                    sp.pprint(augmented_matrix)
-                    print("-" * 70)
+                    self.ans += f"R{j+1} <- R{j + 1} - ({factor} * R{i + 1})\n"
+                    augmented_matrix_np = np.array(augmented_matrix, dtype=object)
+                    self.ans += np.array2string(augmented_matrix_np, separator=', ') + "\n"
+                    self.ans += "-" * 70 + "\n"
 
-            for l in range(n):
-                flag = True
-                for k in range(0, n):
-                    if augmented_matrix[l, k] != sp.sympify(0): 
-                        flag = False
-                        break  
-                if flag:  
-                    if augmented_matrix[l, -1] != sp.sympify(0): 
-                        print("The system has no solution.")
-                        self.ans += "The system has no solution.\n"
-                        return False, None
-                    else:
-                        print("The system has infinite solutions.")
-                        self.ans += "The system has infinite solutions.\n"
-                        return False, None     
             # Normalize the current row
             if self.show_steps:
-                print(f"R{i+1} <- R{i+1}/({augmented_matrix[i, i]})")
-                self.ans += f"R{i+1} - ({augmented_matrix[i, i]})\n"
+                self.ans += f"R{i+1} <- R{i+1}/({augmented_matrix[i, i]})\n"
             augmented_matrix[i, :] /= augmented_matrix[i, i]
             if self.show_steps:
-                sp.pprint(augmented_matrix)
-                print("-" * 70)
-                self.ans += "-" *70
+                augmented_matrix_np = np.array(augmented_matrix, dtype=object)
+                self.ans += np.array2string(augmented_matrix_np, separator=', ') + "\n"
+                self.ans += "-" * 70 + "\n"
 
         # Back substitution to eliminate above the pivots
         for i in range(n - 1, -1, -1):
@@ -74,17 +61,15 @@ class GaussJordanElimination:
                     continue
                 augmented_matrix[j, :] -= factor * augmented_matrix[i, :]
                 if self.show_steps:
-                    print(f"R{j+1} <- R{j + 1} - ({factor} * R{i + 1})\n")
-                    self.ans += f"\nR{j+1} - ({factor} * R{i + 1})\n"
-                    sp.pprint(augmented_matrix)
-                    print("-" * 70)
-                    self.ans += "-" * 70
+                    self.ans += f"R{j+1} <- R{j + 1} - ({factor} * R{i + 1})\n"
+                    augmented_matrix_np = np.array(augmented_matrix, dtype=object)
+                    self.ans += np.array2string(augmented_matrix_np, separator=', ') + "\n"
+                    self.ans += "-" * 70 + "\n"
 
         return True, augmented_matrix
 
     def solve(self):
-        #show_steps = input("Do you want to see the steps? (y/n): ").strip().lower()
-        self.show_steps = True
+        self.show_steps = True  # Set this to True if you want to show the steps
 
         if self.validate_input():
             start_time = time.time()
@@ -92,19 +77,20 @@ class GaussJordanElimination:
             if valid:
                 self.const_matrix = augmented_matrix[:, -1]  # Last column is the constants
                 self.coeff_matrix = augmented_matrix[:, :-1]  # The rest is the coefficients
-                print("Final Solutions:")
-                self.ans += "\nFinal Solutions:\n"
+                self.ans += "Final Solutions:\n"
                 for i in range(self.coeff_matrix.shape[0]):
-                    print(f"x[{i}] = {self.const_matrix[i]}")
                     self.ans += f"x[{i}] = {self.const_matrix[i]}\n"
-                print("-" * 70)
+                self.ans += "-" * 70 + "\n"
                 end_time = time.time()
                 execution_time = end_time - start_time
-                print(f"Execution Time: {execution_time:.6f} seconds")
-                self.ans += f"Execution Time: {execution_time:.6f} seconds"
+                self.ans += f"Execution Time: {execution_time:.6f} seconds\n"
+            else:
+                self.ans += "Invalid input\n"
         else:
-            print("Invalid input")
-            self.ans += "Invalid input"
+            self.ans += "Invalid input\n"
+        
+        # Return the final answer as a string
+        return self.ans
 
 if __name__ == "__main__":
     # Example input for coefficients and constants
@@ -122,5 +108,6 @@ if __name__ == "__main__":
         [l]
     ]
     
-    gauss_jordan_solver = GaussJordanElimination(coeff_matrix, const_matrix)
-    gauss_jordan_solver.solve()
+    gauss_jordan_solver = GaussJordanElimination2(coeff_matrix, const_matrix)
+    result = gauss_jordan_solver.solve()
+    print(result)

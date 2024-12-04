@@ -1,6 +1,7 @@
 import sympy as sp
 from sympy import Matrix
 import time
+import numpy as np
 
 class GaussianElimination2:
     def __init__(self, coeff_matrix, const_matrix):
@@ -14,7 +15,7 @@ class GaussianElimination2:
         if self.coeff_matrix.shape[1] != self.coeff_matrix.shape[0]:
             return False
         if self.const_matrix.shape[1] > 1 or self.const_matrix.shape[0] != self.coeff_matrix.shape[0]:
-           return False
+            return False
         else:
             return True
         
@@ -25,7 +26,10 @@ class GaussianElimination2:
             self.ans += "Initial Augmented Matrix:\n"
             augmented_matrix = self.coeff_matrix.row_join(self.const_matrix)
             sp.pprint(Matrix(augmented_matrix))
-            # self.ans += sp.pretty(Matrix(augmented_matrix))
+            
+            # Convert the augmented matrix to a numpy array and print it
+            augmented_matrix_np = np.array(augmented_matrix, dtype=object)
+            self.ans += np.array2string(augmented_matrix_np, separator=', ')
             print("-" * 70)
             self.ans += "-" * 70
          
@@ -49,8 +53,10 @@ class GaussianElimination2:
                     print(f"R{j+1} <- R{j + 1} - ({factor} * R{i + 1})\n")
                     self.ans+= f"\nR{j+1} <- R{j + 1} - ({factor} * R{i + 1})\n"
                     sp.pprint(augmented_matrix)
-                    # str1 = str(sp.pretty(augmented_matrix))
-                    # self.ans += str1
+                    
+                    # Convert to numpy array for display
+                    augmented_matrix_np = np.array(augmented_matrix, dtype=object)
+                    self.ans += np.array2string(augmented_matrix_np, separator=', ')
                     print("-" * 70)
 
                     self.ans += "-" * 70 +'\n\n'
@@ -71,8 +77,8 @@ class GaussianElimination2:
                     print("The system has infinite solutions.")
                     self.ans += "The system has infinite solutions.\n"
                     return False, None 
-                   
-        return True, self.coeff_matrix.row_join(self.const_matrix)        
+               
+        return True, self.coeff_matrix.row_join(self.const_matrix)
 
     def back_substitution(self, augmented_matrix):
         n = self.coeff_matrix.shape[0]

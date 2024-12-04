@@ -32,6 +32,7 @@ class GaussianElimination:
                 normalized_A[i] = normalized_A[i] / max_element
             if self.steps:
                 print(f"Normalized row {i+1} for pivoting: {list(map(self.format_number, normalized_A[i]))}")
+                self.ans_str += f"\nNormalized pivot at row {i+1}: {list(map(self.format_number, self.A[i]))}"
         return normalized_A
 
     def forward_elimination(self):
@@ -65,6 +66,7 @@ class GaussianElimination:
                 self.B[i], self.B[pivot_row] = self.B[pivot_row], self.B[i]
                 if self.steps:
                     print(f"R{i+1} <-> R{pivot_row+1}")
+                    self.ans_str += f"\nR{i+1} <-> R{pivot_row+1}"
                     self.display_matrix()
 
             # Eliminate entries below the pivot using the correct rows

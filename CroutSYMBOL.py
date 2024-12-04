@@ -1,5 +1,6 @@
 import sympy as sp
 import time  # Importing time module for execution time measurement
+import numpy as np
 
 class LU_Decomposition_Symbolic:
     def __init__(self, A, B, steps=False):
@@ -68,11 +69,12 @@ class LU_Decomposition_Symbolic:
         print("L Matrix:")
         self.ans_str += "L Matrix:\n"
         sp.pprint(self.L)
-        #self.ans_str += str(sp.pretty(self.L))
+        self.ans_str += f"{self.L.tolist()}\n"
+
         print("\nU Matrix:")
         self.ans_str += "U Matrix:\n"
         sp.pprint(self.U)
-        #self.ans_str += str(sp.pretty(self.U))
+        self.ans_str += f"{self.U.tolist()}\n"
 
         print("-" * 50)
 
@@ -117,4 +119,4 @@ if __name__ == "__main__":
 
     print("\nFinal Solution (Symbolic):")
     #sp.pprint(X)
-    print(sp.pretty(X))
+    #print(sp.pretty(X))
