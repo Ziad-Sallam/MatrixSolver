@@ -1,6 +1,7 @@
 import time
 import sympy as sp
 
+
 class LUDecomposition:
     def __init__(self, A, B, steps=False, significant_digits=6):
         self.A = sp.Matrix(A)
