@@ -1,7 +1,6 @@
 import time
 import sympy as sp
 
-
 class LUDecomposition:
     def __init__(self, A, B, steps=False, significant_digits=6):
         self.A = sp.Matrix(A)
@@ -20,6 +19,21 @@ class LUDecomposition:
 
         if self.steps:
             self.display_matrices(L, U)
+
+        # Perform LU Decomposition manually step by step for visibility
+        for i in range(n):
+            for j in range(i, n):
+                # Calculating U[i, j]
+                U[i, j] = self.A[i, j] - sum(L[i, k] * U[k, j] for k in range(i))
+
+            for j in range(i + 1, n):
+                # Calculating L[j, i]
+                if U[i, i] != 0:
+                    L[j, i] = (self.A[j, i] - sum(L[j, k] * U[k, i] for k in range(i))) / U[i, i]
+
+            if self.steps:
+                print(f"Step {i+1}: Updated L and U matrices after processing row {i+1}")
+                self.display_matrices(L, U)
 
         print("LU Decomposition complete.")
         self.ans_str += "LU Decomposition complete.\n"

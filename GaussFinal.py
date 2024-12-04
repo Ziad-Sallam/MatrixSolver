@@ -1,8 +1,8 @@
 import numpy as np
 import time  # Import time module for measuring execution time
 
-class GaussianElimination:
 
+class GaussianElimination:
     def __init__(self, A, B, scaling=False, steps=False, significant_digits=6):
         self.A = np.array(A, float)
         self.B = np.array(B, float)

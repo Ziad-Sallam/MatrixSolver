@@ -16,10 +16,14 @@ class GaussSeidelSolver:
     def max_error(self, x_new, x_old):
         max_err = 0
         for i in range(self.num_variables):
-            if x_old[i] != 0:
-                max_err = max(max_err, abs((x_new[i] - x_old[i]) / x_old[i]))
+            # Format the values to significant figures before calculating error
+            x_new_sf = float(self.format_significant_figures(x_new[i]))
+            x_old_sf = float(self.format_significant_figures(x_old[i]))
+            
+            if x_old_sf != 0:
+                max_err = max(max_err, abs((x_new_sf - x_old_sf) / x_old_sf))
             else:
-                max_err = max(max_err, abs(x_new[i] - x_old[i]))
+                max_err = max(max_err, abs(x_new_sf - x_old_sf))
         self.relativeError = max_err
         return max_err
 
@@ -80,7 +84,7 @@ if __name__ == "__main__":
     A = [
         [8, 3, 2],  # Coefficients of the first equation
         [1, 5, 1],  # Coefficients of the second equation
-        [2, 9, 6]   # Coefficients of the third equation
+        [2, 1, 6]   # Coefficients of the third equation
     ]
     B = [13, 7, 9]  # Constants on the right-hand side
     precision_input = input("Enter the number of significant figures (default 6): ")
@@ -104,3 +108,4 @@ if __name__ == "__main__":
     print(f"\nSolution: {solution}")
     print(f"Iterations: {iterations}")
     print(f"Execution Time: {exec_time:.6f} seconds")
+    print(f"Maximum Relative Error: {solver.relativeError:.6f}")

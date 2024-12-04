@@ -19,6 +19,7 @@ from DolittleSYMBOLS import LUDecomposition as DolittleDecomposition_Symbolic
 from CheloskySYMBOLS import Cholesky_Decomposition as CholeskyDecomposition_Symbolic
 from JordonSYMBOLS import GaussJordanElimination2 as JordanElimination_Symbolic
 
+
 def handleMethodChange():
 
     if ui.methodBox.currentText() == "LU Decompisition":
@@ -195,17 +196,22 @@ def evaluate():
             steps = solver.ans_str
 
         elif method == "Jacobi Method":
-            solver = JacobiSolver(A, b, max_iter=iterations,tol=maxError,precision=ui.significantFig.value())
-            solver.initial_guess = initials
-            solution, iteration, time = solver.jacobi_iteration(single_step=True)
-            print(solution)
-            finals = solution
-            print(iteration)
-            print(time)
-            ex_time = time
-            iterations = iteration
-            ui1.error.setText(str(solver.relativeError))
-            steps = solver.ans_str
+            try:
+                solver = JacobiSolver(A, b, max_iter=iterations,tol=maxError,precision=ui.significantFig.value())
+                solver.initial_guess = initials
+                solution, iteration, time = solver.jacobi_iteration(single_step=True)
+                print(solution)
+                finals = solution
+                print(iteration)
+                print(time)
+                ex_time = time
+                iterations = iteration
+                ui1.error.setText(str(solver.relativeError))
+                steps = solver.ans_str
+            except:
+                setAnsWindowError("division by zero")
+                ans.show()
+                return
 
     elif method == "Gauss Elimination":
         scale = False
