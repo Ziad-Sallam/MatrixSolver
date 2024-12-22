@@ -1,7 +1,7 @@
 import math
 import time as tm
 import subprocess
-from gui1 import Ui_Form
+from test import Ui_Form
 from PyQt6 import QtCore, QtGui, QtWidgets
 from gaussSeidel import GaussSeidelSolver
 from Jacobi import JacobiSolver
@@ -77,11 +77,13 @@ def handleSizeChange():
 
 
 def handleInputChange():
+    print(ui.inputBox.currentText())
     if ui.inputBox.currentText() == "Numeric":
         ui.charWidget.hide()
         ui.matrixWidget.show()
         ui.initials.show()
-    elif ui.inputBox.currentText() == "Characters":
+        handleMethodChange()
+    elif ui.inputBox.currentText() == "character":
         ui.charWidget.show()
         ui.initials.hide()
         ui.matrixWidget.hide()
@@ -155,7 +157,7 @@ def evaluateChar():
 def evaluate():
     ui1.error.setText("None")
     ui1.LU.setText("None")
-    if ui.inputBox.currentText() == "Characters":
+    if ui.inputBox.currentText() == "character":
         evaluateChar()
         return
 
@@ -328,6 +330,42 @@ def setAnsWindowError(msg):
     ans.show()
 
 
+def rootsMethodChange():
+    ui.xu.hide()
+    ui.numberOfIterationsLabel_6.hide()
+    ui.numberOfIterationsLabel_7.setText("f(x)=")
+    if ui.methodBox_2.currentText() == "Bisection" or ui.methodBox_2.currentText() == "Regular Falsi" or ui.methodBox_2.currentText() == "Secant Method":
+        ui.xu.show()
+        ui.numberOfIterationsLabel_6.show()
+        ui.rootsLabel.setText("Xl")
+    else:
+        ui.rootsLabel.setText("X0")
+    if ui.methodBox_2.currentText() == "Fixed Point":
+        ui.numberOfIterationsLabel_7.setText("g(x)=")
+
+def rootsSubmit():
+
+    iterations = ui.numberOfIterations_2.value()          # the maximum number of iterations
+    error = ui.rootsError.value()                         # the maximum relative error
+    significant_digits = ui.rootsSignificantFig.value()   # the number of significant digits
+    func = ui.rootsFunction.currentText()                 # the string of the f(x) or g(x) according to the method
+    xl = ui.xl.value()                                    # the lower bound or the initial guess
+    xu = ui.xu.currentText()                              # the upper bound in the bracketing methods
+
+    if ui.methodBox_2.currentText() == "Bisection":
+        createTextFile("solving bisection...")
+    elif ui.methodBox_2.currentText() == "Regular Falsi":
+        createTextFile("solving regular Falsi...")
+    elif ui.methodBox_2.currentText() == "Secant Method":
+        createTextFile("solving Secant Method...")
+    elif ui.methodBox_2.currentText() == "Fixed Point":
+        createTextFile("solving fixed point...")
+    elif ui.methodBox_2.currentText() == "Newton Raphanson":
+        createTextFile("solving Newton Raphanson...")
+    elif ui.methodBox_2.currentText() == "Modified Newton Raphason":
+        createTextFile("solving Modified Newton Raphason...")
+    handleDetailedSol()
+
 
 def createTextFile(str):
     file = open("ans.txt", "w")
@@ -356,33 +394,22 @@ if __name__ == "__main__":
     ui.significantFig.setValue(6)
     handleMethodChange()
     handleSizeChange()
+
     segnificantFiguresChange()
     ui.methodBox.currentIndexChanged.connect(handleMethodChange)
     ui.Size.valueChanged.connect(handleSizeChange)
     ui.Sbmit.clicked.connect(evaluate)
+    ui.Sbmit_2.clicked.connect(rootsSubmit)
     ui.significantFig.valueChanged.connect(segnificantFiguresChange)
     ans = QtWidgets.QWidget()
     ui.charWidget.hide()
+
     ui1 = Ui_ans()
     ui1.setupUi(ans)
     ui1.solutionButton.clicked.connect(handleDetailedSol)
     ui.inputBox.currentIndexChanged.connect(handleInputChange)
+    ui.methodBox_2.currentIndexChanged.connect(rootsMethodChange)
+
 
     Form.show()
     sys.exit(app.exec())
-
-
-# initialsList = []
-# for i in range(27):
-#     l = QtWidgets.QLabel(self.initials)
-#     l.setObjectName('X' + str(i))
-#
-#     l.move(5 + 94 * (i % 9), 5 + (int(i / 9) * 35))
-#     l.setText("X" + str(i) + ':')
-#     input = QtWidgets.QDoubleSpinBox(self.initials)
-#     input.setDecimals(5)
-#     input.setRange(-9999999.0, 9999999.0)
-#     input.setButtonSymbols(QAbstractSpinBox.ButtonSymbols.NoButtons)
-#     input.move(94 * (i % 9) + 25, int(i / 9) * 35)
-#     input.setFixedWidth(70)
-#     initialsList.append([l, input])

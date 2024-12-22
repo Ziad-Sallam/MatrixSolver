@@ -144,9 +144,14 @@ class Ui_Form(object):
         self.charWidget = QtWidgets.QWidget(parent=self.widget)
         self.charWidget.setGeometry(QtCore.QRect(0, 0, 821, 591))
         self.charWidget.setObjectName("charWidget")
+
+
         self.matrixWidget = QtWidgets.QWidget(parent=self.widget)
         self.matrixWidget.setGeometry(QtCore.QRect(-1, -1, 821, 471))
         self.matrixWidget.setObjectName("matrixWidget")
+
+
+
         self.initials = QtWidgets.QWidget(parent=Form)
         self.initials.setGeometry(QtCore.QRect(39, 230, 851, 80))
         self.initials.setObjectName("initialsWidget")

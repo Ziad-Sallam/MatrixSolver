@@ -6,339 +6,606 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>903</width>
-    <height>819</height>
+    <width>963</width>
+    <height>829</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QWidget" name="gridLayoutWidget">
+  <widget class="QTabWidget" name="TabWidget">
    <property name="geometry">
     <rect>
-     <x>40</x>
-     <y>10</y>
-     <width>851</width>
-     <height>191</height>
+     <x>30</x>
+     <y>0</y>
+     <width>911</width>
+     <height>821</height>
     </rect>
    </property>
-   <layout class="QGridLayout" name="configGrid" rowstretch="0,0,0,0" columnstretch="0,0,0,0,0">
-    <property name="sizeConstraint">
-     <enum>QLayout::SetNoConstraint</enum>
-    </property>
-    <property name="leftMargin">
-     <number>0</number>
-    </property>
-    <property name="rightMargin">
-     <number>0</number>
-    </property>
-    <item row="0" column="2">
-     <widget class="QLabel" name="Scaling">
-      <property name="font">
-       <font>
-        <family>MV Boli</family>
-        <pointsize>12</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>significant figures</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="2">
-     <widget class="QLabel" name="numberOfIterationsLabel_3">
-      <property name="font">
-       <font>
-        <family>MV Boli</family>
-        <pointsize>12</pointsize>
-       </font>
-      </property>
-      <property name="layoutDirection">
-       <enum>Qt::RightToLeft</enum>
-      </property>
-      <property name="text">
-       <string>Input</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="3">
-     <widget class="QComboBox" name="formatBox">
-      <item>
-       <property name="text">
-        <string>Doolittle form</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Crout form</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Cholesky form</string>
-       </property>
-      </item>
-     </widget>
-    </item>
-    <item row="1" column="2">
-     <widget class="QLabel" name="formatLabel">
-      <property name="font">
-       <font>
-        <family>MV Boli</family>
-        <pointsize>12</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>L &amp; U format</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0">
-     <widget class="QLabel" name="sizeLabel">
-      <property name="font">
-       <font>
-        <family>MV Boli</family>
-        <pointsize>12</pointsize>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="layoutDirection">
-       <enum>Qt::RightToLeft</enum>
-      </property>
-      <property name="autoFillBackground">
-       <bool>false</bool>
-      </property>
-      <property name="text">
-       <string>Size</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="1">
-     <widget class="QComboBox" name="comboBox">
-      <item>
-       <property name="text">
-        <string>Partial Pivoting</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Scaling</string>
-       </property>
-      </item>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="numberOfIterationsLabel">
-      <property name="font">
-       <font>
-        <family>MV Boli</family>
-        <pointsize>12</pointsize>
-       </font>
-      </property>
-      <property name="layoutDirection">
-       <enum>Qt::RightToLeft</enum>
-      </property>
-      <property name="text">
-       <string>Number of iterations:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="3">
-     <widget class="QSpinBox" name="significantFig"/>
-    </item>
-    <item row="3" column="3">
-     <widget class="QComboBox" name="comboBox_2">
-      <item>
-       <property name="text">
-        <string>Numeric</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Charcaters</string>
-       </property>
-      </item>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QSpinBox" name="numberOfIterations">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="frame">
-       <bool>true</bool>
-      </property>
-      <property name="keyboardTracking">
-       <bool>true</bool>
-      </property>
-      <property name="showGroupSeparator" stdset="0">
-       <bool>false</bool>
-      </property>
-      <property name="prefix">
-       <string notr="true"/>
-      </property>
-      <property name="minimum">
-       <number>1</number>
-      </property>
-      <property name="maximum">
-       <number>1000</number>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="3">
-     <widget class="QDoubleSpinBox" name="error">
-      <property name="decimals">
-       <number>5</number>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="methodLabel">
-      <property name="font">
-       <font>
-        <family>MV Boli</family>
-        <pointsize>12</pointsize>
-       </font>
-      </property>
-      <property name="layoutDirection">
-       <enum>Qt::RightToLeft</enum>
-      </property>
-      <property name="text">
-       <string>Method: </string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="4">
-     <widget class="QPushButton" name="Sbmit">
-      <property name="text">
-       <string>Submit</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="2">
-     <widget class="QLabel" name="errorLabel">
-      <property name="font">
-       <font>
-        <family>MV Boli</family>
-        <pointsize>12</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>max Relative error:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QSpinBox" name="Size">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="frame">
-       <bool>true</bool>
-      </property>
-      <property name="keyboardTracking">
-       <bool>true</bool>
-      </property>
-      <property name="showGroupSeparator" stdset="0">
-       <bool>false</bool>
-      </property>
-      <property name="prefix">
-       <string notr="true"/>
-      </property>
-      <property name="minimum">
-       <number>1</number>
-      </property>
-      <property name="maximum">
-       <number>1000</number>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QComboBox" name="methodBox">
-      <item>
-       <property name="text">
-        <string>LU Decompisition</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Gauss Elimination</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Gauss Jordan</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Gauss seidel</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Jacobi Method</string>
-       </property>
-      </item>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QLabel" name="numberOfIterationsLabel_2">
-      <property name="font">
-       <font>
-        <family>MV Boli</family>
-        <pointsize>12</pointsize>
-       </font>
-      </property>
-      <property name="layoutDirection">
-       <enum>Qt::RightToLeft</enum>
-      </property>
-      <property name="text">
-       <string>Scaling/Pivoting</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="widget" native="true">
-   <property name="geometry">
-    <rect>
-     <x>50</x>
-     <y>350</y>
-     <width>821</width>
-     <height>471</height>
-    </rect>
+   <property name="currentIndex">
+    <number>1</number>
    </property>
-   <widget class="QWidget" name="charWidget" native="true">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>821</width>
-      <height>591</height>
-     </rect>
-    </property>
-    <widget class="QWidget" name="matrixWidget" native="true">
+   <widget class="QWidget" name="simultaneousTab">
+    <attribute name="title">
+     <string>simultaneous equations</string>
+    </attribute>
+    <widget class="QWidget" name="gridLayoutWidget">
      <property name="geometry">
       <rect>
-       <x>-1</x>
-       <y>-1</y>
-       <width>821</width>
-       <height>471</height>
+       <x>30</x>
+       <y>10</y>
+       <width>851</width>
+       <height>191</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="configGrid" rowstretch="0,0,0,0" columnstretch="0,0,0,0,0">
+      <property name="sizeConstraint">
+       <enum>QLayout::SetNoConstraint</enum>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <item row="2" column="1">
+       <widget class="QSpinBox" name="numberOfIterations">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="frame">
+         <bool>true</bool>
+        </property>
+        <property name="keyboardTracking">
+         <bool>true</bool>
+        </property>
+        <property name="showGroupSeparator" stdset="0">
+         <bool>false</bool>
+        </property>
+        <property name="prefix">
+         <string notr="true"/>
+        </property>
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>1000</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="methodBox">
+        <item>
+         <property name="text">
+          <string>LU Decompisition</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Gauss Elimination</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Gauss Jordan</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Gauss seidel</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Jacobi Method</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="methodLabel">
+        <property name="font">
+         <font>
+          <family>MV Boli</family>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::RightToLeft</enum>
+        </property>
+        <property name="text">
+         <string>Method: </string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="formatLabel">
+        <property name="font">
+         <font>
+          <family>MV Boli</family>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>L &amp; U format</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="numberOfIterationsLabel_2">
+        <property name="font">
+         <font>
+          <family>MV Boli</family>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::RightToLeft</enum>
+        </property>
+        <property name="text">
+         <string>Scaling/Pivoting</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QSpinBox" name="Size">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="frame">
+         <bool>true</bool>
+        </property>
+        <property name="keyboardTracking">
+         <bool>true</bool>
+        </property>
+        <property name="showGroupSeparator" stdset="0">
+         <bool>false</bool>
+        </property>
+        <property name="prefix">
+         <string notr="true"/>
+        </property>
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>1000</number>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QComboBox" name="comboBox">
+        <item>
+         <property name="text">
+          <string>Partial Pivoting</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Scaling</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLabel" name="errorLabel">
+        <property name="font">
+         <font>
+          <family>MV Boli</family>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>max Relative error:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="numberOfIterationsLabel">
+        <property name="font">
+         <font>
+          <family>MV Boli</family>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::RightToLeft</enum>
+        </property>
+        <property name="text">
+         <string>Number of iterations:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QSpinBox" name="significantFig"/>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="Scaling">
+        <property name="font">
+         <font>
+          <family>MV Boli</family>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>significant figures</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="3">
+       <widget class="QComboBox" name="inputBox">
+        <item>
+         <property name="text">
+          <string>Numeric</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>character</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="QLabel" name="numberOfIterationsLabel_3">
+        <property name="font">
+         <font>
+          <family>MV Boli</family>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::RightToLeft</enum>
+        </property>
+        <property name="text">
+         <string>Input</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="sizeLabel">
+        <property name="font">
+         <font>
+          <family>MV Boli</family>
+          <pointsize>12</pointsize>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::RightToLeft</enum>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>Size</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3">
+       <widget class="QDoubleSpinBox" name="error">
+        <property name="decimals">
+         <number>5</number>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="4">
+       <widget class="QPushButton" name="Sbmit">
+        <property name="text">
+         <string>Submit</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QComboBox" name="formatBox">
+        <item>
+         <property name="text">
+          <string>Doolittle form</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Crout form</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Cholesky form</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="widget" native="true">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>280</y>
+       <width>871</width>
+       <height>491</height>
+      </rect>
+     </property>
+     <widget class="QWidget" name="charWidget" native="true">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>20</y>
+        <width>881</width>
+        <height>571</height>
+       </rect>
+      </property>
+      <widget class="QWidget" name="matrixWidget" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>20</y>
+         <width>821</width>
+         <height>471</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="initialsWidget" native="true">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>200</y>
+       <width>881</width>
+       <height>71</height>
       </rect>
      </property>
     </widget>
    </widget>
-  </widget>
-  <widget class="QWidget" name="initialsWidget" native="true">
-   <property name="geometry">
-    <rect>
-     <x>39</x>
-     <y>230</y>
-     <width>851</width>
-     <height>80</height>
-    </rect>
-   </property>
+   <widget class="QWidget" name="equationRootsTab">
+    <attribute name="title">
+     <string>equation Roots</string>
+    </attribute>
+    <widget class="QWidget" name="gridLayoutWidget_2">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>20</y>
+       <width>851</width>
+       <height>191</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="configGrid_2" rowstretch="0,0,0" columnstretch="0,0,0,0,0">
+      <property name="sizeConstraint">
+       <enum>QLayout::SetNoConstraint</enum>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <item row="0" column="4">
+       <widget class="QPushButton" name="Sbmit_2">
+        <property name="text">
+         <string>Submit</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="Scaling_2">
+        <property name="font">
+         <font>
+          <family>MV Boli</family>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>significant figures</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="numberOfIterationsLabel_5">
+        <property name="font">
+         <font>
+          <family>MV Boli</family>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::RightToLeft</enum>
+        </property>
+        <property name="text">
+         <string>Number of iterations:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QDoubleSpinBox" name="rootsError">
+        <property name="decimals">
+         <number>5</number>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="methodLabel_2">
+        <property name="font">
+         <font>
+          <family>MV Boli</family>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::RightToLeft</enum>
+        </property>
+        <property name="text">
+         <string>Method: </string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QSpinBox" name="numberOfIterations_2">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="frame">
+         <bool>true</bool>
+        </property>
+        <property name="keyboardTracking">
+         <bool>true</bool>
+        </property>
+        <property name="showGroupSeparator" stdset="0">
+         <bool>false</bool>
+        </property>
+        <property name="prefix">
+         <string notr="true"/>
+        </property>
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>1000</number>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="rootsLabel">
+        <property name="font">
+         <font>
+          <family>MV Boli</family>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::RightToLeft</enum>
+        </property>
+        <property name="text">
+         <string>Xl</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="methodBox_2">
+        <item>
+         <property name="text">
+          <string>LU Decompisition</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Gauss Elimination</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Gauss Jordan</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Gauss seidel</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Jacobi Method</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QSpinBox" name="rootsSignificantFig"/>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="errorLabel_2">
+        <property name="font">
+         <font>
+          <family>MV Boli</family>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>max Relative error:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLabel" name="numberOfIterationsLabel_6">
+        <property name="font">
+         <font>
+          <family>MV Boli</family>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::RightToLeft</enum>
+        </property>
+        <property name="text">
+         <string>Xu</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3">
+       <widget class="QDoubleSpinBox" name="xu">
+        <property name="decimals">
+         <number>5</number>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QDoubleSpinBox" name="xl">
+        <property name="decimals">
+         <number>5</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QLabel" name="numberOfIterationsLabel_7">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>230</y>
+       <width>51</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MV Boli</family>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>f(x)=</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="rootsFunction">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>230</y>
+       <width>661</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MV Boli</family>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+    </widget>
+    <widget class="QWidget" name="plotWidget" native="true">
+     <property name="geometry">
+      <rect>
+       <x>19</x>
+       <y>279</y>
+       <width>871</width>
+       <height>501</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
   </widget>
  </widget>
  <resources/>
