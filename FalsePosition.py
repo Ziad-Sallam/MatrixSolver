@@ -22,11 +22,9 @@ class FalsePosition:
     def format_significant_figures(self, num):
         """Format a number to the specified significant digits."""
         if num == 0:
-            self.ans += f"{float(f"{0:.{self.precision}g}")}\n"
-            return float(f"{0:.{self.precision}g}")
+            return f"{0:.{self.precision}g}"
         else:
-            self.ans += f"{float(f"{num:.{self.precision}g}")}\n"
-            return float(f"{num:.{self.precision}g}")
+            return f"{num:.{self.precision}g}"
 
     def plot_function(self):
         x = np.linspace(self.x_min, self.x_max, 400)
@@ -41,7 +39,7 @@ class FalsePosition:
     def find_root(self, a, b):
         if self.f(a) * self.f(b) >= 0:
             print("False Position method fails.")
-            self.ans += "False Position method fails.\n"
+            self.ans += "False Position method fails because F(Xl) and F(Xu) have same sign.\n.\n"
             return None
         X_l = a
         X_u = b
@@ -70,7 +68,7 @@ class FalsePosition:
                     self.ans += f"f(X_u) and f(X_r) have same sign, then X_u(new) = X_r = {self.format_significant_figures(X_u)}\n"
             else:
                 print("False Position method fails.")
-                self.ans += "False Position method fails.\n"
+                self.ans += "False Position method fails because F(Xl) and F(Xu) have same sign.\n"
                 return None
             
             if X_r_old is not None:
@@ -88,7 +86,7 @@ class FalsePosition:
         return X_r
 
     def solve(self):
-        self.plot_function()
+        #self.plot_function()
         a = self.x_min
         b = self.x_max
         start_time = time.time()

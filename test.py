@@ -32,8 +32,7 @@ class PlotCanvas(FigureCanvas):
         self.ax.set_xlabel('X-axis')
         self.ax.set_ylabel('Y-axis')
         self.draw()
-
-
+        
 
 class Ui_Form(object):
 
@@ -277,7 +276,7 @@ class Ui_Form(object):
         self.xl.setRange(-99999999, 999999999)
         self.configGrid_2.addWidget(self.xl, 2, 1, 1, 1)
         self.numberOfIterationsLabel_7 = QtWidgets.QLabel(parent=self.equationRootsTab)
-        self.numberOfIterationsLabel_7.setGeometry(QtCore.QRect(40, 230, 51, 26))
+        self.numberOfIterationsLabel_7.setGeometry(QtCore.QRect(40, 190, 51, 26))
         font = QtGui.QFont()
         font.setFamily("MV Boli")
         font.setPointSize(16)
@@ -285,14 +284,14 @@ class Ui_Form(object):
         self.numberOfIterationsLabel_7.setLayoutDirection(QtCore.Qt.LayoutDirection.RightToLeft)
         self.numberOfIterationsLabel_7.setObjectName("numberOfIterationsLabel_7")
         self.rootsFunction = QtWidgets.QLineEdit(parent=self.equationRootsTab)
-        self.rootsFunction.setGeometry(QtCore.QRect(100, 230, 661, 31))
+        self.rootsFunction.setGeometry(QtCore.QRect(100, 190, 661, 31))
         font = QtGui.QFont()
         font.setFamily("MV Boli")
         font.setPointSize(16)
         self.rootsFunction.setFont(font)
         self.rootsFunction.setObjectName("rootsFunction")
         self.plotWidget = QtWidgets.QWidget(parent=self.equationRootsTab)
-        self.plotWidget.setGeometry(QtCore.QRect(19, 279, 871, 601))
+        self.plotWidget.setGeometry(QtCore.QRect(19, 240, 871, 601))
         self.plotWidget.setObjectName("plotWidget")
         self.TabWidget.addTab(self.equationRootsTab, "")
 
@@ -411,7 +410,8 @@ class Ui_Form(object):
             x = np.linspace(-1000, 1000, 100000)
             y = f_sympy(x)
             self.plotCanvas.ax.plot(x, y, 'r-')
-            if self.methodBox_2.currentText() != "Bisection" and self.methodBox_2.currentText() != "Regular Falsi":
+            #if self.methodBox_2.currentText() != "Bisection" and self.methodBox_2.currentText() != "Regular Falsi":
+            if self.methodBox_2.currentText() == "Fixed Point":
                 self.plotCanvas.ax.plot(x, x)
             self.plotCanvas.ax.set_title('f(x)')
             self.plotCanvas.ax.set_xlabel('X-axis')

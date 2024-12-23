@@ -348,7 +348,7 @@ def rootsMethodChange():
         ui.rootsLabel.setText("X0")
     if ui.methodBox_2.currentText() == "Fixed Point":
         ui.numberOfIterationsLabel_7.setText("g(x)=")
-
+ 
 def rootsSubmit():
 
     iterations = ui.numberOfIterations_2.value()          # the maximum number of iterations
@@ -367,7 +367,7 @@ def rootsSubmit():
     if ui.methodBox_2.currentText() == "Bisection":
         solver = BisectionMethod(func, xl, xu, error, iterations, True, significant_digits)
         solver.solve()
-        createTextFile("solving bisection...")
+        createTextFile(solver.ans)
     elif ui.methodBox_2.currentText() == "Regular Falsi":
         solver = FalsePosition(func, xl, xu, error, iterations, True, significant_digits)
         solver.solve()

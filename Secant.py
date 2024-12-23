@@ -22,10 +22,8 @@ class SecantMethod:
     def format_significant_figures(self, num):
         """Format a number to the specified significant digits."""
         if num == 0:
-            self.ans += f"{0:.{self.precision}g}\n"
             return f"{0:.{self.precision}g}"
         else:
-            self.ans += f"{num:.{self.precision}g}\n"
             return f"{num:.{self.precision}g}"
 
     def plot_function(self):
@@ -48,13 +46,12 @@ class SecantMethod:
                 self.ans += "Division by zero encountered. No roots found.\n"
                 return None
             
-            if abs(f_x1) == 0.0 :
-                print(f"f(X{self.n}) = 0 , The actual root is reached.")
-                self.ans += f"f(X{self.n}) = 0 , The actual root is reached.\n"
-                x_new = x1
-                break
-            
             x_new = x1 - ( f_x1 * (x0 - x1) / (f_x0 - f_x1) )
+            
+            if abs(self.f(x_new)) == 0.0 :
+                print(f"f(X{self.n+1}) = 0 , The actual root is reached.")
+                self.ans += f"f(X{self.n+1}) = 0 , The actual root is reached.\n"
+                break
             
             if self.show_steps:
                 print(f"Iteration {self.n}:\nX{self.n-1} = {self.format_significant_figures(x0)}, X{self.n} = {self.format_significant_figures(x1)}")
@@ -92,7 +89,7 @@ class SecantMethod:
         return x_new
 
     def solve(self):
-        self.plot_function()
+        #self.plot_function()
         x0 = self.x_min
         x1 = self.x_max
         start_time = time.time()

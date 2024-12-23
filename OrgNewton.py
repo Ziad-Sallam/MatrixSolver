@@ -26,10 +26,8 @@ class NewtonRaphsonMethod:
     def format_significant_figures(self, num):
         """Format a number to the specified significant digits."""
         if num == 0:
-            self.ans += f"{0:.{self.precision}g}\n"
             return f"{0:.{self.precision}g}"
         else:
-            self.ans += f"{num:.{self.precision}g}\n"
             return f"{num:.{self.precision}g}"
 
     def plot_function(self):
@@ -92,7 +90,7 @@ class NewtonRaphsonMethod:
         return x_new
 
     def solve(self):
-        self.plot_function()
+        #self.plot_function()
         x0 = self.x_min
         start_time = time.time()
         root = self.find_root(x0)

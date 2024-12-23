@@ -26,10 +26,8 @@ class ModNewtonRaphsonMethod:
     def format_significant_figures(self, num):
         """Format a number to the specified significant digits."""
         if num == 0:
-            self.ans += f"{0:.{self.precision}g}\n"
             return f"{0:.{self.precision}g}"
         else:
-            self.ans += f"{num:.{self.precision}g}\n"
             return f"{num:.{self.precision}g}"
 
     def plot_function(self):
@@ -90,7 +88,7 @@ class ModNewtonRaphsonMethod:
         return x_new
 
     def solve(self):
-        self.plot_function()
+        #self.plot_function()
         x0 = self.x_min
         start_time = time.time()
         root = self.find_root(x0)
@@ -101,7 +99,7 @@ class ModNewtonRaphsonMethod:
                 print("Couldn't converge within the specified iterations")
                 self.ans += "Couldn't converge within the specified iterations\n"
             print(f"The root is: {self.format_significant_figures(root)}")
-            self.ans += f"The root is: {self.format_significant_figures(root)}"
+            self.ans += f"The root is: {self.format_significant_figures(root)}\n"
             print(f"Number of iterations = {self.n}")
             self.ans += f"Number of iterations = {self.n}\n"
             print(f"Approximate relative error = {self.format_significant_figures(self.relative_error)}%")

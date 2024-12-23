@@ -22,10 +22,8 @@ class BisectionMethod:
     def format_significant_figures(self, num):
         """Format a number to the specified significant digits."""
         if num == 0:
-            self.ans += f"{0:.{self.precision}g}\n"
             return f"{0:.{self.precision}g}"
         else:
-            self.ans += f"{num:.{self.precision}g}\n"
             return f"{num:.{self.precision}g}"
 
 
@@ -37,12 +35,12 @@ class BisectionMethod:
         plt.axvline(0, color='black', linewidth=0.5)
         plt.grid(color='gray', linestyle='--', linewidth=0.5)
         plt.legend()
-        plt.show()
+        plt.show() 
 
     def find_root(self, a, b):
         if self.f(a) * self.f(b) >= 0:
             print("Bisection method fails.")
-            self.ans += "Bisection method fails.\n"
+            self.ans += "Bisection method fails because F(Xl) and F(Xu) have same sign.\n"
             return None
         X_l = a
         X_u = b
@@ -70,7 +68,7 @@ class BisectionMethod:
                     self.ans += f"f(X_u) and f(X_r) have same sign, then X_u(new) = X_r = {self.format_significant_figures(X_u)}\n"
             else:
                 print("Bisection method fails.")
-                self.ans += "Bisection method fails.\n"
+                self.ans += "Bisection method fails because F(Xl) and F(Xu) have same sign.\n"
                 return None
             
             if X_r_old is not None:
@@ -88,7 +86,7 @@ class BisectionMethod:
         return X_r
 
     def solve(self):
-        self.plot_function()
+        #self.plot_function()
         a = self.x_min
         b = self.x_max
         start_time = time.time()
@@ -124,10 +122,10 @@ class BisectionMethod:
 
 if __name__ == "__main__":
     x = symbols('x')
-    equation = "exp(-x)-x"  # Example equation
+    equation = "exp(-x)-x"  
     
     x_min = float(input("Enter the minimum x value for plotting: "))
-    x_max = float(input("Enter the maximum x value for plotting: "))
+    x_max = float(input("Enter the maximum x value for plotting: ")) 
     
     eps = input("Enter the epsilon (default 1e-5): ")
     eps = float(eps) if eps else 1e-5

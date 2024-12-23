@@ -25,10 +25,8 @@ class FixedPointMethod:
     def format_significant_figures(self, num):
         """Format a number to the specified significant digits."""
         if num == 0:
-            self.ans += f"{0:.{self.precision}g}\n"
             return f"{0:.{self.precision}g}"
         else:
-            self.ans += f"{num:.{self.precision}g}\n"
             return f"{num:.{self.precision}g}"
 
     def plot_function(self):
@@ -78,13 +76,13 @@ class FixedPointMethod:
                 break
             if self.show_steps and self.n != self.max_iter :
                 print("-----------------------------------------")
-                self.ans += f"The method will diverge.\n"
+                self.ans += "-------------------------------------------\n"
                 
             x_old = x_new    
         return x_new
 
     def solve(self):
-        self.plot_function()
+        #self.plot_function()
         x0 = self.x_min
         start_time = time.time()
         root = self.find_root(x0)
@@ -93,7 +91,7 @@ class FixedPointMethod:
             self.ans += f"-----------------------------------------------------\n"
             if self.n == self.max_iter:
                 print("Couldn't converge within the specified iterations")
-                self.ans += "Couldn't converge within the specified iterations"
+                self.ans += "Couldn't converge within the specified iterations\n"
             print(f"The root is: {self.format_significant_figures(root)}")
             self.ans += f"The root is: {self.format_significant_figures(root)}\n"
             print(f"Number of iterations = {self.n}")
