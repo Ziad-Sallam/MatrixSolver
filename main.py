@@ -18,6 +18,12 @@ from CroutSYMBOL import LU_Decomposition_Symbolic as CroutDecomposition_Symbolic
 from DolittleSYMBOLS import LUDecomposition as DolittleDecomposition_Symbolic
 from CheloskySYMBOLS import Cholesky_Decomposition as CholeskyDecomposition_Symbolic
 from JordonSYMBOLS import GaussJordanElimination2 as JordanElimination_Symbolic
+from Bisection import BisectionMethod
+from FalsePosition import FalsePosition
+from Secant import SecantMethod
+from FixedPoint import FixedPointMethod
+from OrgNewton import NewtonRaphsonMethod
+from ModNewton import ModNewtonRaphsonMethod
 
 
 def handleMethodChange():
@@ -346,24 +352,46 @@ def rootsMethodChange():
 def rootsSubmit():
 
     iterations = ui.numberOfIterations_2.value()          # the maximum number of iterations
+    print("here")
     error = ui.rootsError.value()                         # the maximum relative error
+    print("here1")
     significant_digits = ui.rootsSignificantFig.value()   # the number of significant digits
-    func = ui.rootsFunction.currentText()                 # the string of the f(x) or g(x) according to the method
+    print("here2")
+    func = ui.rootsFunction.text()                 # the string of the f(x) or g(x) according to the method
+    print("here3")
     xl = ui.xl.value()                                    # the lower bound or the initial guess
-    xu = ui.xu.currentText()                              # the upper bound in the bracketing methods
+    print("here4")
+    xu = ui.xu.value()                              # the upper bound in the bracketing methods
+    print("here5")
 
     if ui.methodBox_2.currentText() == "Bisection":
+        solver = BisectionMethod(func, xl, xu, error, iterations, True, significant_digits)
+        solver.solve()
         createTextFile("solving bisection...")
     elif ui.methodBox_2.currentText() == "Regular Falsi":
-        createTextFile("solving regular Falsi...")
+        solver = FalsePosition(func, xl, xu, error, iterations, True, significant_digits)
+        solver.solve()
+        createTextFile(solver.ans)
     elif ui.methodBox_2.currentText() == "Secant Method":
-        createTextFile("solving Secant Method...")
-    elif ui.methodBox_2.currentText() == "Fixed Point":
-        createTextFile("solving fixed point...")
-    elif ui.methodBox_2.currentText() == "Newton Raphanson":
-        createTextFile("solving Newton Raphanson...")
+        solver = SecantMethod(func, xl, xu, error, iterations, True, significant_digits)
+        solver.solve()
+        createTextFile(solver.ans)
+    elif ui.methodBox_2.currentText() == "Fixed Point":  # error...
+        print(xl)
+        solver = FixedPointMethod(func, xl, xu, error, iterations, True, significant_digits)
+        print("hello")
+        solver.solve()
+        createTextFile(solver.ans)
+    elif ui.methodBox_2.currentText() == "Newton Raphanson":  # error...
+        solver = NewtonRaphsonMethod(func, xl, xu, error, iterations, True, significant_digits)
+        print("hello")
+        solver.solve()
+        createTextFile(solver.ans)
     elif ui.methodBox_2.currentText() == "Modified Newton Raphason":
-        createTextFile("solving Modified Newton Raphason...")
+        solver = ModNewtonRaphsonMethod(func, xl, xu, error, iterations, True, significant_digits)
+        print("hello")
+        solver.solve()
+        createTextFile(solver.ans)
     handleDetailedSol()
 
 
