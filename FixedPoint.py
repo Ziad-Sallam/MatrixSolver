@@ -41,45 +41,43 @@ class FixedPointMethod:
         plt.show()
 
     def find_root(self, x0):
-        x_old = x0
-        for self.n in range(1, self.max_iter + 1):
-            x_new = self.g(x_old)
-            g_prime_value = abs(self.g_prime(x_old))
-            
-            if self.g(x_old) == x_old :
-                print(f"The actual root is reached.")
-                self.ans += f"The actual root is reached.\n"
-                x_new = x_old
-                break 
-            
-            if self.show_steps:
-                print(f"Iteration {self.n}:\nX{self.n-1} = {self.format_significant_figures(x_old)}, X{self.n} = {self.format_significant_figures(x_new)}")
-                self.ans += f"Iteration {self.n}:\nX{self.n-1} = {self.format_significant_figures(x_old)}, X{self.n} = {self.format_significant_figures(x_new)}\n"
-                print(f"|g'(X{self.n-1})| = {self.format_significant_figures(g_prime_value)}")
-                self.ans += f"|g'(X{self.n-1})| = {self.format_significant_figures(g_prime_value)}\n"
-            
-            if abs(x_new) < self.eps:  # Check if the root is close to zero
-             print(f"The root is close to zero: {self.format_significant_figures(x_new)}")
-             self.ans += f"The root is close to zero: {self.format_significant_figures(x_new)}\n"
-             break
-         
-            self.relative_error = abs((x_new - x_old) / x_new) * 100
-            if self.show_steps:
-                print(f"Relative error = {self.format_significant_figures(self.relative_error)} %")
-                self.ans += f"Relative error = {self.format_significant_figures(self.relative_error)} %\n"
-            if g_prime_value > 1:     
-                if abs(x_new) > 1000 :        #ASSUMPTION BY ME (MAY BE WRONG)              
-                    print("The method will diverge.")
-                    self.ans += f"The method will diverge.\n"
-                    return None
-            if self.relative_error < self.eps:
-                break
-            if self.show_steps and self.n != self.max_iter :
-                print("-----------------------------------------")
-                self.ans += "-------------------------------------------\n"
+        try:
+            x_old = x0
+            for self.n in range(1, self.max_iter + 1):
+                x_new = self.g(x_old)
                 
-            x_old = x_new    
-        return x_new
+                if self.g(x_old) == x_old:
+                    print(f"The actual root is reached.")
+                    self.ans += f"The actual root is reached.\n"
+                    x_new = x_old
+                    break 
+                
+                if self.show_steps:
+                    print(f"Iteration {self.n}:\nX{self.n-1} = {self.format_significant_figures(x_old)}, X{self.n} = {self.format_significant_figures(x_new)}")
+                    self.ans += f"Iteration {self.n}:\nX{self.n-1} = {self.format_significant_figures(x_old)}, X{self.n} = {self.format_significant_figures(x_new)}\n"
+                
+                if abs(x_new) < self.eps:
+                    print(f"The root is close to zero: {self.format_significant_figures(x_new)}")
+                    self.ans += f"The root is close to zero: {self.format_significant_figures(x_new)}\n"
+                    break
+                
+                self.relative_error = abs((x_new - x_old) / x_new) * 100
+                if self.show_steps:
+                    print(f"Relative error = {self.format_significant_figures(self.relative_error)} %")
+                    self.ans += f"Relative error = {self.format_significant_figures(self.relative_error)} %\n"
+                
+                if self.relative_error < self.eps:
+                    break
+                if self.show_steps and self.n != self.max_iter:
+                    print("-----------------------------------------")
+                    self.ans += "-------------------------------------------\n"
+                
+                x_old = x_new    
+            return x_new
+        except Exception as e:
+            print(f"Error finding root: {e}")
+            self.ans += f"Error finding root: {e}\n"
+            return None
 
     def solve(self):
         #self.plot_function()

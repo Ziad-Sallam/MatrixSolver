@@ -25,7 +25,6 @@ from FixedPoint import FixedPointMethod
 from OrgNewton import NewtonRaphsonMethod
 from ModNewton import ModNewtonRaphsonMethod
 
-
 def handleMethodChange():
 
     if ui.methodBox.currentText() == "LU Decompisition":

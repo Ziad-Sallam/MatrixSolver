@@ -1,7 +1,1 @@
-f(X2) = 0 , The actual root is reached.
---------------------------------------------------
-The root is: 0
-Number of iterations = 1
-Approximate relative error = 0%
-All significant figures are correct
-Execution Time: 0.00099921 seconds
+Error finding root: float division by zero
