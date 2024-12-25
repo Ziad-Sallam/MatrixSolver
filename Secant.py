@@ -37,11 +37,12 @@ class SecantMethod:
         plt.show()
 
     def find_root(self, x0, x1):
+       try: 
         for self.n in range(1, self.max_iter + 1):
             f_x0 = self.f(x0)   
             f_x1 = self.f(x1)   
             
-            if f_x0 - f_x1 == 0.0:
+            if abs(f_x0 - f_x1) == 0.0:
                 print("Division by zero encountered. No roots found.")
                 self.ans += "Division by zero encountered. No roots found.\n"
                 return None
@@ -87,6 +88,11 @@ class SecantMethod:
             
             x0, x1 = x1, x_new
         return x_new
+       except Exception as e:
+            print(f"Error finding root: {e}")
+            self.ans += f"Error finding root: {e}\n"
+            return None
+
 
     def solve(self):
         #self.plot_function()
