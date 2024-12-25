@@ -41,11 +41,13 @@ class ModNewtonRaphsonMethod:
         plt.show()
 
     def find_root(self, x0):
+       try: 
         x_old = x0
         for self.n in range(1, self.max_iter + 1):
             f_value = self.f(x_old)
             f_prime_value = self.f_prime(x_old)
             f_double_prime_value = self.f_double_prime(x_old)
+            
             if abs(f_value) == 0.0 :
                 print(f"f(X{self.n}) = 0 , The actual root is reached.")
                 self.ans += f"f(X{self.n}) = 0 , The actual root is reached.\n"
@@ -65,6 +67,7 @@ class ModNewtonRaphsonMethod:
                 self.ans += f"f(X{self.n-1}) = {self.format_significant_figures(f_value)}, f'(X{self.n-1}) = {self.format_significant_figures(f_prime_value)} , f''(x{self.n-1}) = {self.format_significant_figures(f_double_prime_value)}\n"
                 print(f"X{self.n} = {self.format_significant_figures(x_old)} - ( ({self.format_significant_figures(f_value)} * {self.format_significant_figures(f_prime_value)}) / ({self.format_significant_figures(f_prime_value**2)} - ({self.format_significant_figures(f_value)} * {self.format_significant_figures(f_double_prime_value)}))) = {self.format_significant_figures(x_new)}")
                 self.ans += f"X{self.n} = {self.format_significant_figures(x_old)} - ( ({self.format_significant_figures(f_value)} * {self.format_significant_figures(f_prime_value)}) / ({self.format_significant_figures(f_prime_value**2)} - ({self.format_significant_figures(f_value)} * {self.format_significant_figures(f_double_prime_value)}))) = {self.format_significant_figures(x_new)}\n"
+            
             if abs(x_new) < self.eps:  # Check if the root is close to zero
              print(f"The root is close to zero: {self.format_significant_figures(x_new)}")
              self.ans += f"The root is close to zero: {self.format_significant_figures(x_new)}\n"
@@ -86,6 +89,10 @@ class ModNewtonRaphsonMethod:
                 self.ans += "-------------------------------------------\n"
             x_old = x_new    
         return x_new
+       except Exception as e:
+         print(f"Error finding root: {e}")
+         self.ans += f"Error finding root: {e}\n"
+         return None
 
     def solve(self):
         #self.plot_function()

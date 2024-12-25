@@ -41,25 +41,31 @@ class NewtonRaphsonMethod:
         plt.show()
 
     def find_root(self, x0):
+     try: 
         x_old = x0
         for self.n in range(1, self.max_iter + 1):
             f_value = self.f(x_old)
             f_prime_value = self.f_prime(x_old)
             f_double_prime_value = self.f_double_prime(x_old)
+            
             if abs(f_value) == 0.0 :
                 print(f"f(X{self.n}) = 0 , The actual root is reached.")
                 self.ans += f"f(X{self.n}) = 0 , The actual root is reached.\n"
                 x_new = x_old
                 break
+            
             if f_prime_value == 0:
                 print("Derivative is zero. No roots found.")
                 self.ans += f"Derivative is zero. No roots found.\n"
                 return None
+            
             if f_double_prime_value == 0:
                 print(f"Second derivative at X{self.n-1} is zero. It is an inflection point and will diverge.")
                 self.ans += f"Second derivative at X{self.n-1} is zero. It is an inflection point and will diverge.\n"
                 return None
+            
             x_new = x_old - (f_value / f_prime_value)
+            
             if self.show_steps:
                 print(f"Iteration {self.n}:\nX{self.n-1} = {self.format_significant_figures(x_old)}")
                 self.ans += f"Iteration {self.n}:\nX{self.n-1} = {self.format_significant_figures(x_old)}\n"
@@ -70,6 +76,7 @@ class NewtonRaphsonMethod:
                 
             if abs(x_new) < self.eps:  # Check if the root is close to zero
              print(f"The root is close to zero: {self.format_significant_figures(x_new)}")
+             self.ans += f"The root is close to zero: {self.format_significant_figures(x_new)}\n"
              break
             
             if abs(x_new) > 1000:                                   #ASSUMPTION BY ME (MAY BE WRONG)              
@@ -88,6 +95,10 @@ class NewtonRaphsonMethod:
                 self.ans += "----------------------------------------------\n"
             x_old = x_new    
         return x_new
+     except Exception as e:
+        print(f"Error finding root: {e}")
+        self.ans += f"Error finding root: {e}\n"
+        return None
 
     def solve(self):
         #self.plot_function()

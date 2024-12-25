@@ -123,7 +123,7 @@ class GaussJordanElimination:
         self.ans_str += "\n["
         for row in augmented_matrix:
             print(" ".join([self.format_number(val) for val in row]), end=" \n")
-            self.ans_str += f'\n{" ".join([self.format_number(val) for val in row]) + "\n"}'
+            #self.ans_str += f'\n{" ".join([self.format_number(val) for val in row]) + "\n"}'
         print("]")
         self.ans_str += "]\n"
         print("-" * 50)
