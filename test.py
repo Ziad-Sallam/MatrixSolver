@@ -414,6 +414,8 @@ class Ui_Form(object):
             if self.methodBox_2.currentText() == "Fixed Point":
                 self.plotCanvas.ax.plot(x, x)
             self.plotCanvas.ax.set_title('f(x)')
+            self.plotCanvas.ax.axhline(0, color='black', linewidth=2)
+            self.plotCanvas.ax.axvline(0, color='black', linewidth=2)
             self.plotCanvas.ax.set_xlabel('X-axis')
             self.plotCanvas.ax.set_ylabel('Y-axis')
             self.plotCanvas.ax.grid(True, which='major', linestyle='-', linewidth=1, color='black', alpha=0.5)
