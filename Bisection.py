@@ -38,7 +38,8 @@ class BisectionMethod:
         plt.show() 
 
     def find_root(self, a, b):
-        if self.f(a) * self.f(b) >= 0:
+       try: 
+        if self.f(a) * self.f(b) > 0:
             print("Bisection method fails.")
             self.ans += "Bisection method fails because F(Xl) and F(Xu) have same sign.\n"
             return None
@@ -56,6 +57,7 @@ class BisectionMethod:
                 print("f(X_r) = 0 , The actual root is reached.")
                 self.ans += "f(X_r) = 0 , The actual root is reached.\n"
                 return X_r
+            
             elif self.f(X_l) * f_m_n > 0:
                 X_l = X_r
                 if self.show_steps:
@@ -66,7 +68,8 @@ class BisectionMethod:
                 if self.show_steps:
                     print(f"f(X_u) and f(X_r) have same sign, then X_u(new) = X_r = {self.format_significant_figures(X_u)}")
                     self.ans += f"f(X_u) and f(X_r) have same sign, then X_u(new) = X_r = {self.format_significant_figures(X_u)}\n"
-            else:
+                    
+            elif self.f(X_u) * self.f(X_l) > 0:
                 print("Bisection method fails.")
                 self.ans += "Bisection method fails because F(Xl) and F(Xu) have same sign.\n"
                 return None
@@ -84,6 +87,10 @@ class BisectionMethod:
                 print("-----------------------------------------")
                 self.ans += "--------------------------------------------------\n"
         return X_r
+       except Exception as e:
+            print(e)
+            self.ans += str(e)
+            return None
 
     def solve(self):
         #self.plot_function()
@@ -103,7 +110,7 @@ class BisectionMethod:
             print(f"Number of iterations = {self.n}")
             self.ans += f"Number of iterations = {self.n}\n"
             print(f"Approximate relative error = {self.format_significant_figures(self.relative_error)}%")
-            self.ans += f"Approximate relative error = {self.format_significant_figures(self.relative_error)}%"
+            self.ans += f"Approximate relative error = {self.format_significant_figures(self.relative_error)}%\n"
             if self.relative_error > 5:
               print("Number of correct significant figures = 0")
               self.ans += "Number of correct significant figures = 0\n"

@@ -37,7 +37,8 @@ class FalsePosition:
         plt.show()
 
     def find_root(self, a, b):
-        if self.f(a) * self.f(b) >= 0:
+     try: 
+        if self.f(a) * self.f(b) > 0:
             print("False Position method fails.")
             self.ans += "False Position method fails because F(Xl) and F(Xu) have same sign.\n.\n"
             return None
@@ -66,7 +67,7 @@ class FalsePosition:
                 if self.show_steps:
                     print(f"f(X_u) and f(X_r) have same sign, then X_u(new) = X_r = {self.format_significant_figures(X_u)}")
                     self.ans += f"f(X_u) and f(X_r) have same sign, then X_u(new) = X_r = {self.format_significant_figures(X_u)}\n"
-            else:
+            elif self.f(X_u) * self.f(X_l) > 0:
                 print("False Position method fails.")
                 self.ans += "False Position method fails because F(Xl) and F(Xu) have same sign.\n"
                 return None
@@ -84,6 +85,10 @@ class FalsePosition:
                 print("-----------------------------------------")
                 self.ans += ("----------------------------------------------\n")
         return X_r
+     except Exception as e:
+            print(e)
+            self.ans += str(e)
+            return None
 
     def solve(self):
         #self.plot_function()
