@@ -24,11 +24,7 @@ class ModNewtonRaphsonMethod:
         self.ans = ""
     
     def format_significant_figures(self, num):
-        """Format a number to the specified significant digits."""
-        if num == 0:
-            return f"{0:.{self.precision}g}"
-        else:
-            return f"{num:.{self.precision}g}"
+        return num if num == 0 else round(num, -int(math.floor(math.log10(abs(num)))) + (self.precision - 1))
 
     def plot_function(self):
         x = np.linspace(self.x_min, self.x_max, 400)
@@ -42,11 +38,11 @@ class ModNewtonRaphsonMethod:
 
     def find_root(self, x0):
        try: 
-        x_old = x0
+        x_old = self.format_significant_figures(x0)
         for self.n in range(1, self.max_iter + 1):
-            f_value = self.f(x_old)
-            f_prime_value = self.f_prime(x_old)
-            f_double_prime_value = self.f_double_prime(x_old)
+            f_value = self.format_significant_figures(self.f(x_old))
+            f_prime_value = self.format_significant_figures(self.f_prime(x_old))
+            f_double_prime_value = self.format_significant_figures(self.f_double_prime(x_old))
             
             if abs(f_value) == 0.0 :
                 print(f"f(X{self.n}) = 0 , The actual root is reached.")
@@ -58,7 +54,7 @@ class ModNewtonRaphsonMethod:
                 print("Divison by zero. No roots found.")
                 self.ans += f"Division by zero. No roots found.\n"
                 return None
-            x_new = x_old - ((f_value * f_prime_value) / (f_prime_value**2 - (f_value * f_double_prime_value) ) )
+            x_new = self.format_significant_figures(x_old - ((f_value * f_prime_value) / (f_prime_value**2 - (f_value * f_double_prime_value) ) ))
            
             if self.show_steps:
                 print(f"Iteration {self.n}:\nX{self.n-1} = {self.format_significant_figures(x_old)}")
@@ -78,10 +74,10 @@ class ModNewtonRaphsonMethod:
                     self.ans += f"The method will diverge.\n"
                     return None
             
-            self.relative_error = abs((x_new - x_old) / x_new) * 100
+            self.relative_error = self.format_significant_figures(abs((x_new - x_old) / x_new) * 100)
             if self.show_steps:
-                print(f"Relative error = {self.format_significant_figures(self.relative_error)} %")
-                self.ans += f"Relative error = {self.format_significant_figures(self.relative_error)} %\n"
+                print(f"Relative error = {self.relative_error} %")
+                self.ans += f"Relative error = {self.relative_error} %\n"
             if self.relative_error < self.eps:
                 break
             if self.show_steps and self.n != self.max_iter:

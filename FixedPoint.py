@@ -23,11 +23,8 @@ class FixedPointMethod:
         self.ans = ''
     
     def format_significant_figures(self, num):
-        """Format a number to the specified significant digits."""
-        if num == 0:
-            return f"{0:.{self.precision}g}"
-        else:
-            return f"{num:.{self.precision}g}"
+       return num if num == 0 else round(num, -int(math.floor(math.log10(abs(num)))) + (self.precision - 1))
+    
 
     def plot_function(self):
         x = np.linspace(self.x_min, self.x_max, 400)
@@ -42,32 +39,40 @@ class FixedPointMethod:
 
     def find_root(self, x0):
         try:
-            x_old = x0
+            x_old = self.format_significant_figures(x0)
             for self.n in range(1, self.max_iter + 1):
-                x_new = self.g(x_old)
+                x_new = self.format_significant_figures(self.g(x_old))
                 
-                if self.g(x_old) == x_old:
+                """ if self.format_significant_figures(self.g(x_old)) == x_old:
                     print(f"The actual root is reached.")
                     self.ans += f"The actual root is reached.\n"
                     x_new = x_old
                     break 
-                
+                 """
+                 
                 if self.show_steps:
                     print(f"Iteration {self.n}:\nX{self.n-1} = {self.format_significant_figures(x_old)}, X{self.n} = {self.format_significant_figures(x_new)}")
-                    self.ans += f"Iteration {self.n}:\nX{self.n-1} = {self.format_significant_figures(x_old)}, X{self.n} = {self.format_significant_figures(x_new)}\n"
+                    self.ans += f"Iteration {self.n}:\nX{self.n-1} = {self.format_significant_figures(x_old)}, X{self.n} = {self.format_significant_figures(x_new)}\n" 
                 
+               
                 if abs(x_new) < self.eps:
                     print(f"The root is close to zero: {self.format_significant_figures(x_new)}")
                     self.ans += f"The root is close to zero: {self.format_significant_figures(x_new)}\n"
                     break
                 
-                self.relative_error = abs((x_new - x_old) / x_new) * 100
+                self.relative_error = self.format_significant_figures(abs((x_new - x_old) / x_new) * 100)
                 if self.show_steps:
-                    print(f"Relative error = {self.format_significant_figures(self.relative_error)} %")
-                    self.ans += f"Relative error = {self.format_significant_figures(self.relative_error)} %\n"
+                    print(f"Relative error = {self.relative_error} %")
+                    self.ans += f"Relative error = {self.relative_error} %\n"
                 
                 if self.relative_error < self.eps:
                     break
+                
+                if abs(x_new) > 1000:  # Assumption for divergence
+                   print("The method will diverge.")
+                   self.ans += "The method will diverge."
+                   return None
+               
                 if self.show_steps and self.n != self.max_iter:
                     print("-----------------------------------------")
                     self.ans += "-------------------------------------------\n"

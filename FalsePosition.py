@@ -20,11 +20,7 @@ class FalsePosition:
         self.ans =''
     
     def format_significant_figures(self, num):
-        """Format a number to the specified significant digits."""
-        if num == 0:
-            return f"{0:.{self.precision}g}"
-        else:
-            return f"{num:.{self.precision}g}"
+      return num if num == 0 else round(num, -int(math.floor(math.log10(abs(num)))) + (self.precision - 1))
 
     def plot_function(self):
         x = np.linspace(self.x_min, self.x_max, 400)
@@ -42,12 +38,12 @@ class FalsePosition:
             print("False Position method fails.")
             self.ans += "False Position method fails because F(Xl) and F(Xu) have same sign.\n.\n"
             return None
-        X_l = a
-        X_u = b
+        X_l = self.format_significant_figures(a)
+        X_u = self.format_significant_figures(b)
         X_r_old = None
+        
         for self.n in range(1, self.max_iter + 1):
-            # False Position formula
-            X_r = ( (self.f(X_u) * X_l ) -(self.f(X_l) * X_u) ) / (self.f(X_u) - self.f(X_l))
+            X_r = self.format_significant_figures(( (self.f(X_u) * X_l ) -(self.f(X_l) * X_u) ) / (self.f(X_u) - self.f(X_l)))
             f_m_n = self.f(X_r)
             if self.show_steps:
                 print(f"Iteration {self.n}:\nX_l = {self.format_significant_figures(X_l)}, f(X_l) = {self.format_significant_figures(self.f(X_l))}\nX_u = {self.format_significant_figures(X_u)}, f(X_u) = {self.format_significant_figures(self.f(X_u))}\nX_r = {self.format_significant_figures(X_r)} , f(X_r) = {self.format_significant_figures(f_m_n)}")
@@ -73,10 +69,10 @@ class FalsePosition:
                 return None
             
             if X_r_old is not None:
-                self.relative_error = abs((X_r - X_r_old) / X_r) * 100
+                self.relative_error = self.format_significant_figures(abs((X_r - X_r_old) / X_r) * 100)
                 if self.show_steps:
-                    print(f"Relative error = {self.format_significant_figures(self.relative_error)} %")
-                    self.ans += f"Relative error = {self.format_significant_figures(self.relative_error)} %\n"
+                    print(f"Relative error = {self.relative_error} %")
+                    self.ans += f"Relative error = {self.relative_error} %\n"
                 if self.relative_error < self.eps:
                     break
             X_r_old = X_r

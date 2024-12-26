@@ -339,6 +339,7 @@ def rootsMethodChange():
     ui.xu.hide()
     ui.numberOfIterationsLabel_6.hide()
     ui.numberOfIterationsLabel_7.setText("f(x)=")
+    
     if ui.methodBox_2.currentText() == "Bisection" or ui.methodBox_2.currentText() == "Regular Falsi" or ui.methodBox_2.currentText() == "Secant Method":
         ui.xu.show()
         ui.numberOfIterationsLabel_6.show()
